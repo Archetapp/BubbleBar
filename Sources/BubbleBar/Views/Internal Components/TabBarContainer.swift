@@ -20,14 +20,67 @@ extension BubbleBar {
                     minWidth: configuration.size?.width,
                     maxWidth: configuration.size == nil ? nil : configuration.size?.width,
                     minHeight: configuration.size?.height,
-                    maxHeight: configuration.size?.height
+                    maxHeight: configuration.size == nil ? nil : configuration.size?.height
                 )
                 .background {
-                    configuration.shape
-                        .fill(theme.colors.cardBackground)
+                    if configuration.isGlass {
+                        glassBackground
+                    } else {
+                        configuration.shape
+                            .fill(theme.colors.cardBackground.background())
+                    }
                 }
                 .clipShape(configuration.shape)
                 .padding(configuration.padding)
+        }
+        
+        private var size: CGSize {
+            let width = configuration.size?.width ?? UIScreen.main.bounds.width - 32
+            let height = configuration.size?.height ?? 60
+            return CGSize(width: width, height: height)
+        }
+        
+        private var glassBackground: some View {
+            GeometryReader { geometry in
+                let size = geometry.size
+                let tintColor = theme.colors.cardBackground.color
+                
+                configuration.shape
+                    .fill(Material.ultraThinMaterial)
+                    .background {
+                        configuration.shape
+                            .fill()
+                            .visualEffect { content, _ in
+                                content
+                                    .layerEffect(
+                                        ShaderLibrary.glass(
+                                            size: size,
+                                            tint: tintColor,
+                                            blur: 12.0
+                                        ),
+                                        maxSampleOffset: CGSize(width: 12, height: 0)
+                                    )
+                                    .layerEffect(
+                                        ShaderLibrary.glass(
+                                            size: size,
+                                            tint: tintColor,
+                                            blur: 12.0
+                                        ),
+                                        maxSampleOffset: CGSize(width: 0, height: 12)
+                                    )
+                            }
+                    }
+                    .overlay {
+                        configuration.shape
+                            .fill(tintColor.opacity(0.1))
+                            .blendMode(.plusLighter)
+                    }
+                    .overlay {
+                        configuration.shape
+                            .stroke(tintColor.opacity(0.3), lineWidth: 1)
+                    }
+                    .shadow(color: tintColor.opacity(0.3), radius: 12)
+            }
         }
     }
 } 

@@ -8,39 +8,51 @@ internal struct ExampleGreen: View {
     
     var body: some View {
         BubbleBarView(selectedTab: $selectedTab) {
-            Color.blue
+            view
                 .edgesIgnoringSafeArea(.all)
                 .tabBarItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("Home Is where th", systemImage: "house.fill")
                 }
             
-            Color.red
+            view
                 .edgesIgnoringSafeArea(.all)
                 .tabBarItem {
                     Label("Focus", systemImage: "timer")
                 }
-            Color.purple
+            view
                 .edgesIgnoringSafeArea(.all)
                 .tabBarItem {
-                    Label("Something", systemImage: "mail.stack")
+                    Label("Something Ama", systemImage: "mail.stack")
                 }
             
-            Color.green
+            view
                 .edgesIgnoringSafeArea(.all)
                 .tabBarItem {
                     Label("Eraser", systemImage: "eraser")
                 }
             
             
-            Color.black
+            view
                 .edgesIgnoringSafeArea(.all)
                 .tabBarItem {
                     Label("Grid", systemImage: "grid")
                 }
         }
         .bubbleBarStyle(.ocean)
-        .bubbleBarViewTransitionAnimation(.bouncy)
-        .bubbleBarViewTransition(.slide)
+        .bubbleBarGlass()
+    }
+    
+    var view: some View {
+        ScrollView {
+            LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
+                ForEach(0 ..< 300) { i in
+                    Text("Hello World").bold()
+                }
+            }
+            .padding()
+            .edgesIgnoringSafeArea(.all)
+        }
+        .background(Color.blue.opacity(.random(in: 0.2 ... 0.6)))
     }
 }
 

@@ -18,6 +18,10 @@ extension BubbleBar {
         public var shadowRadius: CGFloat
         public var shadowColor: Color
         public var shadowOffset: CGPoint
+        public var isGlass: Bool
+        public var glassBlurRadius: CGFloat
+        public var glassOpacity: Double
+        public var glassTint: Color
         
         public init(
             style: Style = .forest,
@@ -26,13 +30,17 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
-            shape: AnyShape = AnyShape(Capsule()),
-            itemShape: AnyShape = AnyShape(Capsule()),
+            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 25)),
+            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 20)),
             padding: EdgeInsets = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16),
             equalItemSizing: Bool = false,
-            shadowRadius: CGFloat = 1,
-            shadowColor: Color = .black.opacity(0.2),
-            shadowOffset: CGPoint = .zero
+            shadowRadius: CGFloat = 8,
+            shadowColor: Color = .black.opacity(0.1),
+            shadowOffset: CGPoint = .zero,
+            isGlass: Bool = false,
+            glassBlurRadius: CGFloat = 10,
+            glassOpacity: Double = 0.2,
+            glassTint: Color = .white
         ) {
             self.style = style
             self.animation = animation
@@ -47,6 +55,10 @@ extension BubbleBar {
             self.shadowRadius = shadowRadius
             self.shadowColor = shadowColor
             self.shadowOffset = shadowOffset
+            self.isGlass = isGlass
+            self.glassBlurRadius = glassBlurRadius
+            self.glassOpacity = glassOpacity
+            self.glassTint = glassTint
         }
     }
 }
