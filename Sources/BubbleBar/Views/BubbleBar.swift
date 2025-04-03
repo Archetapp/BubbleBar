@@ -42,10 +42,9 @@ public struct BubbleBarView<Content: View>: View {
             _VariadicViewAdapter(content) { content in
                 ZStack {
                     ForEach(content.children.indices, id: \.self) { index in
-                        if index == selectedTab {
-                            content.children[index]
-                                .transition(configuration.viewTransition)
-                        }
+                        content.children[index]
+                            .transition(configuration.viewTransition)
+                            .opacity(index == selectedTab ? 1 : 0)
                     }
                 }
                 .animation(configuration.viewTransitionAnimation, value: selectedTab)
@@ -112,24 +111,6 @@ public extension View {
     func bubbleBarAnimation(_ animation: Animation) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.animation = animation
-        }
-    }
-    
-    /// Sets the animation used for view transitions between tabs.
-    /// - Parameter animation: The animation to apply
-    /// - Returns: A view with the modified view transition animation
-    func bubbleBarViewTransitionAnimation(_ animation: Animation) -> some View {
-        transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.viewTransitionAnimation = animation
-        }
-    }
-    
-    /// Sets the transition effect used for view transitions between tabs.
-    /// - Parameter transition: The transition to apply
-    /// - Returns: A view with the modified view transition
-    func bubbleBarViewTransition(_ transition: AnyTransition) -> some View {
-        transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.viewTransition = transition
         }
     }
     
@@ -233,5 +214,18 @@ public extension View {
         BubbleBarView(selectedTab: selectedTab) {
             self
         }
+    }
+}
+
+// MARK: - Deprecated
+public extension View {
+    @available(*, deprecated, message: "View transitions are no longer supported to maintain view state")
+    func bubbleBarViewTransition(_ transition: AnyTransition) -> some View {
+        self
+    }
+    
+    @available(*, deprecated, message: "View transitions are no longer supported to maintain view state")
+    func bubbleBarViewTransitionAnimation(_ animation: Animation) -> some View {
+        self
     }
 }
