@@ -126,16 +126,6 @@ let customStyle = BubbleBar.Style(
 )
 ```
 
-2. Using opacity for glass effects:
-```swift
-let glassStyle = BubbleBar.Style(
-    cardBackground: .white,               // White background
-    primary: .white,                      // Selected item color
-    textSecondary: .white.opacity(0.7),   // Unselected item color
-    shadow: .black                        // Shadow color
-)
-```
-
 Apply your custom style using the `.bubbleBarStyle()` modifier:
 ```swift
 BubbleBarView(selectedTab: $selectedTab) {
