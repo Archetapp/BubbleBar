@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "BubbleBar",
     platforms: [
-        .iOS(.v16),
+        .iOS(.v17),
         .macOS(.v14)
     ],
     products: [
@@ -25,6 +25,9 @@ let package = Package(
             name: "BubbleBar",
             dependencies: [
                 "SwiftUIX"
+            ],
+            resources: [
+                .process("Theme/GlassShader.metal")
             ]
         )
     ]

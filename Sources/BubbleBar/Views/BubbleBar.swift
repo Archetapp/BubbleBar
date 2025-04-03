@@ -203,6 +203,18 @@ public extension View {
         }
     }
     
+    /// Applies a glass morphism effect to the bubble bar.
+    /// - Parameters:
+    ///   - enabled: Whether to enable the glass effect
+    /// - Returns: A view with the modified glass effect
+    func bubbleBarGlass(
+        _ enabled: Bool = true
+    ) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.isGlass = enabled
+        }
+    }
+    
     /// Wraps the view in a bubble bar with the specified selected tab.
     /// - Parameter selectedTab: A binding to the currently selected tab index
     /// - Returns: A view wrapped in a bubble bar

@@ -37,9 +37,13 @@ extension BubbleBar {
                 .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
                 .background {
                     if isSelected {
-                        configuration.itemShape
-                            .fill(theme.colors.primary.opacity(0.2))
-                            .matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                        ZStack {
+                            configuration.itemShape
+                                .fill(theme.colors.primary.opacity(0.15))
+                            configuration.itemShape
+                                .stroke(theme.colors.primary.opacity(0.4), lineWidth: 0.5)
+                        }
+                        .matchedGeometryEffect(id: "BUBBLE", in: namespace)
                     }
                 }
             }
