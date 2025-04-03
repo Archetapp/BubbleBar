@@ -4,13 +4,18 @@ import SwiftUI
 
 internal struct ExampleComplex: View {
     @State private var selectedTab = 0
+    @State var isShowingTabBar: Bool = true
     
     var body: some View {
         BubbleBarView(selectedTab: $selectedTab) {
-            Text("Home View")
-                .tabBarItem {
-                    Label("Home", systemImage: "house.fill")
-                }
+            Button {
+                self.isShowingTabBar.toggle()
+            } label: {
+                Text(isShowingTabBar ? "Hide Tab Bar" : "Show Tab Bar")
+            }
+            .tabBarItem {
+                Label("Home", systemImage: "house.fill")
+            }
             
             Text("Focus View")
                 .tabBarItem {
@@ -22,6 +27,7 @@ internal struct ExampleComplex: View {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
         }
+        .bubbleBarStyle(.desert)
         .bubbleBarAnimation(.bouncy)
         .bubbleBarViewTransition(.opacity)
         .bubbleBarStyle(.desert)
@@ -31,6 +37,8 @@ internal struct ExampleComplex: View {
         .bubbleBarItemShape(RoundedRectangle(cornerRadius: 11))
         .bubbleBarItemEqualSizing(true)
         .bubbleBarPadding(.zero)
+        .showsBubbleBar(self.isShowingTabBar)
+        .bubbleBarGlass()
     }
 }
 

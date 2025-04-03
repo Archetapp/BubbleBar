@@ -88,6 +88,8 @@ public struct BubbleBarView<Content: View>: View {
             )
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Tab Bar")
+            .offset(y: configuration.isVisible ? 0 : 100)
+            .animation(configuration.animation, value: configuration.isVisible)
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -212,6 +214,15 @@ public extension View {
     ) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.isGlass = enabled
+        }
+    }
+    
+    /// Controls the visibility of the bubble bar.
+    /// - Parameter isVisible: Whether the bubble bar should be visible
+    /// - Returns: A view with the modified bubble bar visibility
+    func showsBubbleBar(_ isVisible: Bool) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.isVisible = isVisible
         }
     }
     

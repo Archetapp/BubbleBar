@@ -22,6 +22,7 @@ extension BubbleBar {
         public var glassBlurRadius: CGFloat
         public var glassOpacity: Double
         public var glassTint: Color
+        public var isVisible: Bool
         
         public init(
             style: Style = .forest,
@@ -40,7 +41,8 @@ extension BubbleBar {
             isGlass: Bool = false,
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
-            glassTint: Color = .white
+            glassTint: Color = .white,
+            isVisible: Bool = true
         ) {
             self.style = style
             self.animation = animation
@@ -59,6 +61,7 @@ extension BubbleBar {
             self.glassBlurRadius = glassBlurRadius
             self.glassOpacity = glassOpacity
             self.glassTint = glassTint
+            self.isVisible = isVisible
         }
     }
 }
