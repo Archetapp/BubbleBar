@@ -20,14 +20,14 @@ extension BubbleBar {
                         .labelStyle(.iconOnly)
                         .font(.system(size: 20, weight: .regular).dynamic)
                         .frame(width: 24, height: 24)
-                        .foregroundColor(isSelected ? theme.colors.primary : theme.colors.textSecondary)
+                        .foregroundColor(isSelected ? theme.colors.selectedItemColor : theme.colors.unselectedItemColor)
                         .matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
                     
                     if isSelected && showLabel {
                         label
                             .labelStyle(.titleOnly)
                             .font(.system(size: 14, weight: .medium).dynamic)
-                            .foregroundColor(theme.colors.primary)
+                            .foregroundColor(theme.colors.selectedItemColor)
                             .matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
                     }
                 }
@@ -39,9 +39,9 @@ extension BubbleBar {
                     if isSelected {
                         ZStack {
                             configuration.itemShape
-                                .fill(theme.colors.primary.opacity(0.15))
+                                .fill(theme.colors.bubbleBackgroundColor)
                             configuration.itemShape
-                                .stroke(theme.colors.primary.opacity(0.4), lineWidth: 0.5)
+                                .stroke(theme.colors.bubbleStrokeColor, lineWidth: 0.5)
                         }
                         .matchedGeometryEffect(id: "BUBBLE", in: namespace)
                     }

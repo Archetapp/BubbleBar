@@ -6,38 +6,46 @@ extension BubbleBar {
     @frozen
     public struct Theme: Sendable, Equatable {
         public struct Colors: Sendable, Equatable {
-            public let cardBackground: Color
-            public let primary: Color
-            public let textSecondary: Color
-            public let shadow: Color
+            // Bar colors
+            public var cardBackground: Color
+            public var barStrokeColor: Color
+            public var barShadowColor: Color
+            
+            // Item colors
+            public var selectedItemColor: Color
+            public var unselectedItemColor: Color
+            
+            // Bubble colors
+            public var bubbleBackgroundColor: Color
+            public var bubbleStrokeColor: Color
             
             public init(
                 cardBackground: Color,
-                primary: Color,
-                textSecondary: Color,
-                shadow: Color
+                barStrokeColor: Color,
+                barShadowColor: Color = Color.clear,
+                selectedItemColor: Color,
+                unselectedItemColor: Color,
+                bubbleBackgroundColor: Color = Color.clear,
+                bubbleStrokeColor: Color = Color.clear
             ) {
                 self.cardBackground = cardBackground
-                self.primary = primary
-                self.textSecondary = textSecondary
-                self.shadow = shadow
+                self.barStrokeColor = barStrokeColor
+                self.barShadowColor = barShadowColor
+                self.selectedItemColor = selectedItemColor
+                self.unselectedItemColor = unselectedItemColor
+                self.bubbleBackgroundColor = bubbleBackgroundColor
+                self.bubbleStrokeColor = bubbleStrokeColor
             }
             
             public static var `default`: Colors {
                 Colors(
                     cardBackground: .green.opacity(0.1),
-                    primary: .green,
-                    textSecondary: .gray,
-                    shadow: .black
-                )
-            }
-            
-            public static var glass: Colors {
-                Colors(
-                    cardBackground: .white.opacity(0.2),
-                    primary: .white,
-                    textSecondary: .white.opacity(0.7),
-                    shadow: .black
+                    barStrokeColor: .green.opacity(0.2),
+                    barShadowColor: .black,
+                    selectedItemColor: .green,
+                    unselectedItemColor: .gray,
+                    bubbleBackgroundColor: .green.opacity(0.15),
+                    bubbleStrokeColor: .green.opacity(0.4)
                 )
             }
         }
@@ -51,10 +59,6 @@ extension BubbleBar {
         public static var `default`: Theme {
             Theme(colors: .default)
         }
-        
-        public static var glass: Theme {
-            Theme(colors: .glass)
-        }
     }
 }
 
@@ -67,4 +71,26 @@ public extension EnvironmentValues {
         get { self[ThemeKey.self] }
         set { self[ThemeKey.self] = newValue }
     }
-} 
+}
+
+
+// MARK: - Deprecated
+public extension BubbleBar.Theme.Colors {
+    @available(*, deprecated, message: "Use the new initializer with explicit color parameters instead")
+    init(
+        cardBackground: Color,
+        primary: Color,
+        textSecondary: Color,
+        shadow: Color
+    ) {
+        self.init(
+            cardBackground: cardBackground,
+            barStrokeColor: primary.opacity(0.2),
+            barShadowColor: shadow,
+            selectedItemColor: primary,
+            unselectedItemColor: textSecondary,
+            bubbleBackgroundColor: primary.opacity(0.15),
+            bubbleStrokeColor: primary.opacity(0.4)
+        )
+    }
+}

@@ -38,7 +38,17 @@ internal struct ExampleGreen: View {
                     Label("Grid", systemImage: "grid")
                 }
         }
-        .bubbleBarStyle(.ocean)
+//        .bubbleBarStyle(
+//            .init(
+//                selectedItemColor: <#T##Color#>,
+//                unselectedItemColor: <#T##Color#>,
+//                bubbleBackgroundColor: <#T##Color#>,
+//                bubbleStrokeColor: <#T##Color#>,
+//                barBackgroundColor: <#T##Color#>,
+//                barStrokeColor: <#T##Color#>,
+//                barShadowColor: <#T##Color#>
+//            )
+//        )
         .bubbleBarGlass()
     }
     

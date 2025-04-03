@@ -28,6 +28,10 @@ extension BubbleBar {
                     } else {
                         configuration.shape
                             .fill(theme.colors.cardBackground)
+                            .overlay {
+                                configuration.shape
+                                    .stroke(theme.colors.barStrokeColor, lineWidth: 0.5)
+                            }
                     }
                 }
                 .clipShape(configuration.shape)
@@ -79,7 +83,7 @@ extension BubbleBar {
                         configuration.shape
                             .stroke(tintColor.opacity(0.3), lineWidth: 1)
                     }
-                    .shadow(color: tintColor.opacity(0.3), radius: 12)
+                    .shadow(color: theme.colors.barShadowColor.opacity(0.3), radius: 12)
             }
         }
     }

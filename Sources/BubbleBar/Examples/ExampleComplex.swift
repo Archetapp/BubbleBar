@@ -12,6 +12,7 @@ internal struct ExampleComplex: View {
                 self.isShowingTabBar.toggle()
             } label: {
                 Text(isShowingTabBar ? "Hide Tab Bar" : "Show Tab Bar")
+
             }
             .tabBarItem {
                 Label("Home", systemImage: "house.fill")
@@ -27,7 +28,17 @@ internal struct ExampleComplex: View {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
         }
-        .bubbleBarStyle(.desert)
+        .bubbleBarStyle(
+            .init(
+                selectedItemColor: Color.black,
+                unselectedItemColor: Color.white,
+                bubbleBackgroundColor: Color.white,
+                bubbleStrokeColor: Color.black,
+                barBackgroundColor: Color.black,
+                barStrokeColor: Color.clear,
+                barShadowColor: Color.black
+            )
+        )
         .bubbleBarAnimation(.bouncy)
         .bubbleBarStyle(.desert)
         .showBubbleBarLabels(true)

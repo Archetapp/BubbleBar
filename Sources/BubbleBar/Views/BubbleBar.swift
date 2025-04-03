@@ -80,7 +80,7 @@ public struct BubbleBarView<Content: View>: View {
             .environment(\.theme, configuration.style.theme)
             .compositingGroup()
             .shadow(
-                color: configuration.shadowColor,
+                color: configuration.style.theme.colors.barShadowColor,
                 radius: configuration.shadowRadius,
                 x: configuration.shadowOffset.x,
                 y: configuration.shadowOffset.y
@@ -172,7 +172,11 @@ public extension View {
     ) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.shadowRadius = radius
-            config.shadowColor = color
+            config.style = .copying(config.style) { colors in
+                var colors = colors
+                colors.barShadowColor = color
+                return colors
+            }
             config.shadowOffset = offset
         }
     }
