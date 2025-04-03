@@ -4,6 +4,25 @@
 
 A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar provides a sleek and intuitive navigation experience for iOS and macOS applications.
 
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Implementation](#basic-implementation)
+  - [Customization](#customization)
+- [Themes](#themes)
+  - [Available Themes](#available-themes)
+  - [Creating Custom Styles](#creating-custom-styles)
+- [Advanced Customization](#advanced-customization)
+  - [Animation Control](#animation-control)
+  - [Shape Customization](#shape-customization)
+  - [Sizing Options](#sizing-options)
+- [Accessibility](#accessibility)
+- [Requirements](#requirements)
+- [License](#license)
+
+---
+
 ## Features
 
 - 🎨 Multiple built-in themes (Dark, Desert, Forest, Night Owl, High Contrast, Ocean)
@@ -14,6 +33,8 @@ A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar
 - 🎭 Customizable shadows and effects
 - 🎬 Independent animations for tab bar and view transitions
 - 📱 iOS 16+ and macOS 14+ support
+
+---
 
 ## Installation
 
@@ -26,6 +47,8 @@ dependencies: [
     .package(url: "https://github.com/archetapp/BubbleBar.git", branch: "main")
 ]
 ```
+
+---
 
 ## Usage
 
@@ -74,6 +97,10 @@ BubbleBarView(selectedTab: $selectedTab) {
 .bubbleBarPadding(.init(top: 8, leading: 16, bottom: 8, trailing: 16))  // Custom padding
 .bubbleBarShadow(radius: 4, color: .black.opacity(0.1), offset: .init(x: 0, y: 2))  // Custom shadow
 ```
+
+---
+
+## Themes
 
 ### Available Themes
 
@@ -144,6 +171,10 @@ BubbleBarView(selectedTab: $selectedTab) {
   </div>
 </div>
 
+---
+
+## Advanced Customization
+
 ### Animation Control
 
 BubbleBar provides three separate animation modifiers for fine-tuned control over different aspects of the interface:
@@ -203,11 +234,10 @@ You can combine transitions for more complex effects:
 
 BubbleBar allows you to customize both the container and item shapes:
 
-
 1. `.bubbleBarShape(RoundedRectangle(cornerRadius: 20))` - Container shape
 2. `.bubbleBarItemShape(Capsule())` - Inner items shape
 
-   NOTE: Padding is defaulted to 4 between inner items and outer shape. (Might make customizable)
+NOTE: Padding is defaulted to 4 between inner items and outer shape. (Might make customizable)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; text-align: center;">
   <div>
@@ -220,17 +250,17 @@ BubbleBar allows you to customize both the container and item shapes:
   </div>
 </div>
 
-### Sizing Behavior
+### Sizing Options
 
-BubbleBar supports two sizing modes:
-1. Edge-to-edge (default) - The bar stretches to fill the available width
-2. Fixed size - Set a specific size using `bubbleBarSize()`
+#### Container Sizing
+- Edge-to-edge (default) - The bar stretches to fill the available width
+- Fixed size - Set a specific size using `bubbleBarSize()`
 
-### Item Sizing Options
+#### Item Sizing
+- Dynamic (default) - Selected items expand to show labels
+- Equal sizing - All items maintain equal width using `bubbleBarItemEqualSizing(true)`
 
-Control how items are sized within the bar:
-1. Dynamic (default) - Selected items expand to show labels
-2. Equal sizing - All items maintain equal width using `bubbleBarItemEqualSizing(true)`
+---
 
 ## Accessibility
 
