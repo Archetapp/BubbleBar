@@ -114,15 +114,43 @@ BubbleBarView(selectedTab: $selectedTab) {
 
 ### Creating Custom Styles
 
-You can create your own custom style in two ways:
+You can create your own custom style in several ways:
 
-1. Using the simple color-based initializer:
+1. Using the comprehensive color initializer:
 ```swift
 let customStyle = BubbleBar.Style(
-    cardBackground: .white,          // Background color of the bar
-    primary: .blue,                  // Color for selected items
-    textSecondary: .gray,            // Color for unselected items
-    shadow: .black.opacity(0.1)      // Shadow color
+    selectedItemColor: .blue,           // Color for selected tab items
+    unselectedItemColor: .gray,         // Color for unselected tab items
+    bubbleBackgroundColor: .blue.opacity(0.15),  // Background of selected item bubble
+    bubbleStrokeColor: .blue.opacity(0.4),       // Border of selected item bubble
+    barBackgroundColor: .white,         // Background color of the bar
+    barStrokeColor: .blue.opacity(0.2), // Border color of the bar
+    barShadowColor: .black.opacity(0.1) // Shadow color of the bar
+)
+```
+
+2. Using the copying modifier to modify specific colors:
+```swift
+let modifiedStyle = BubbleBar.Style.copying(existingStyle) { colors in
+    var colors = colors
+    colors.selectedItemColor = .red      // Only change what you need
+    colors.bubbleBackgroundColor = .red.opacity(0.15)
+    return colors
+}
+```
+
+3. Using the direct configuration initializer for more control:
+```swift
+BubbleBar.Configuration(
+    selectedItemColor: .blue,
+    unselectedItemColor: .gray,
+    bubbleBackgroundColor: .blue.opacity(0.15),
+    bubbleStrokeColor: .blue.opacity(0.4),
+    barStrokeColor: .blue.opacity(0.2),
+    barShadowColor: .black.opacity(0.1),
+    // Additional configuration options...
+    showLabels: true,
+    isGlass: false
 )
 ```
 
@@ -133,6 +161,11 @@ BubbleBarView(selectedTab: $selectedTab) {
 }
 .bubbleBarStyle(customStyle)
 ```
+
+The colors are organized in a `Theme.Colors` structure for better organization:
+- Bar colors: `barBackgroundColor`, `barStrokeColor`, `barShadowColor`
+- Item colors: `selectedItemColor`, `unselectedItemColor`
+- Bubble colors: `bubbleBackgroundColor`, `bubbleStrokeColor`
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; text-align: center;">
   <div>
