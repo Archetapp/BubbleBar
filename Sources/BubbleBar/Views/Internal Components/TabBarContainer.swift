@@ -27,7 +27,7 @@ extension BubbleBar {
                         glassBackground
                     } else {
                         configuration.shape
-                            .fill(theme.colors.cardBackground.background())
+                            .fill(theme.colors.cardBackground)
                     }
                 }
                 .clipShape(configuration.shape)
@@ -43,7 +43,7 @@ extension BubbleBar {
         private var glassBackground: some View {
             GeometryReader { geometry in
                 let size = geometry.size
-                let tintColor = theme.colors.cardBackground.color
+                let tintColor = theme.colors.cardBackground
                 
                 configuration.shape
                     .fill(Material.ultraThinMaterial)

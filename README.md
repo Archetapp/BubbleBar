@@ -85,6 +85,38 @@ BubbleBarView(selectedTab: $selectedTab) {
 - `.ocean` - Cool blue tones
 - Or create your own!
 
+### Creating Custom Styles
+
+You can create your own custom style in two ways:
+
+1. Using the simple color-based initializer:
+```swift
+let customStyle = BubbleBar.Style(
+    cardBackground: .white,          // Background color of the bar
+    primary: .blue,                  // Color for selected items
+    textSecondary: .gray,            // Color for unselected items
+    shadow: .black.opacity(0.1)      // Shadow color
+)
+```
+
+2. Using opacity for glass effects:
+```swift
+let glassStyle = BubbleBar.Style(
+    cardBackground: .white,               // White background
+    primary: .white,                      // Selected item color
+    textSecondary: .white.opacity(0.7),   // Unselected item color
+    shadow: .black                        // Shadow color
+)
+```
+
+Apply your custom style using the `.bubbleBarStyle()` modifier:
+```swift
+BubbleBarView(selectedTab: $selectedTab) {
+    // Your tab content here
+}
+.bubbleBarStyle(customStyle)
+```
+
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; text-align: center;">
   <div>
     <img src="https://github.com/user-attachments/assets/d6a06b03-9fab-4763-97bd-59fff6f24f55" width="50%" alt="Desert Theme" style="display: block; margin: 0 auto;">

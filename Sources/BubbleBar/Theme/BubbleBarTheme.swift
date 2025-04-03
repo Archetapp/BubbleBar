@@ -6,29 +6,13 @@ extension BubbleBar {
     @frozen
     public struct Theme: Sendable, Equatable {
         public struct Colors: Sendable, Equatable {
-            public struct BackgroundStyle: Sendable, Equatable {
-                public let color: Color
-                public let blurRadius: CGFloat
-                public let opacity: Double
-                
-                public init(color: Color, blurRadius: CGFloat = 0, opacity: Double = 1.0) {
-                    self.color = color
-                    self.blurRadius = blurRadius
-                    self.opacity = opacity
-                }
-                
-                public func background() -> some ShapeStyle {
-                    color.opacity(opacity)
-                }
-            }
-            
-            public let cardBackground: BackgroundStyle
+            public let cardBackground: Color
             public let primary: Color
             public let textSecondary: Color
             public let shadow: Color
             
             public init(
-                cardBackground: BackgroundStyle,
+                cardBackground: Color,
                 primary: Color,
                 textSecondary: Color,
                 shadow: Color
@@ -41,7 +25,7 @@ extension BubbleBar {
             
             public static var `default`: Colors {
                 Colors(
-                    cardBackground: BackgroundStyle(color: .green, opacity: 0.1),
+                    cardBackground: .green.opacity(0.1),
                     primary: .green,
                     textSecondary: .gray,
                     shadow: .black
@@ -50,7 +34,7 @@ extension BubbleBar {
             
             public static var glass: Colors {
                 Colors(
-                    cardBackground: BackgroundStyle(color: .white, blurRadius: 10, opacity: 0.2),
+                    cardBackground: .white.opacity(0.2),
                     primary: .white,
                     textSecondary: .white.opacity(0.7),
                     shadow: .black
