@@ -28,6 +28,9 @@ extension BubbleBar {
         public var glassTint: Color
         public var isVisible: Bool
         
+        // Content spacing properties
+        public var contentBottomPadding: CGFloat
+        
         // Accessibility properties
         public var minimumTouchTargetSize: CGSize
         public var accessibilitySpacing: EdgeInsets
@@ -52,6 +55,7 @@ extension BubbleBar {
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
             isVisible: Bool = true,
+            contentBottomPadding: CGFloat = 0,
             minimumTouchTargetSize: CGSize = CGSize(width: 44, height: 44),
             accessibilitySpacing: EdgeInsets = EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24),
             useReducedMotion: Bool = false,
@@ -75,6 +79,7 @@ extension BubbleBar {
             self.glassOpacity = glassOpacity
             self.glassTint = glassTint
             self.isVisible = isVisible
+            self.contentBottomPadding = contentBottomPadding
             
             // Initialize accessibility properties
             self.minimumTouchTargetSize = minimumTouchTargetSize
@@ -106,7 +111,8 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
-            isVisible: Bool = true
+            isVisible: Bool = true,
+            contentBottomPadding: CGFloat = 0
         ) {
             // Create a custom style with the provided colors
             let customStyle = Style(
@@ -136,7 +142,8 @@ extension BubbleBar {
                 glassBlurRadius: glassBlurRadius,
                 glassOpacity: glassOpacity,
                 glassTint: glassTint,
-                isVisible: isVisible
+                isVisible: isVisible,
+                contentBottomPadding: contentBottomPadding
             )
         }
         

@@ -22,6 +22,16 @@ public enum BubbleBar {}
 /// }
 /// .bubbleBarStyle(.dark)
 /// ```
+///
+/// The view automatically adds bottom padding to content to prevent it from being obscured by the tab bar.
+/// You can customize this padding using the `bubbleBarContentPadding(_:)` modifier:
+///
+/// ```swift
+/// BubbleBarView(selectedTab: $selectedTab) {
+///     // Your tab views here
+/// }
+/// .bubbleBarContentPadding(80) // Custom padding
+/// ```
 public struct BubbleBarView<Content: View>: View {
     @Environment(\.bubbleBarConfiguration) private var configuration
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -32,6 +42,7 @@ public struct BubbleBarView<Content: View>: View {
     @Namespace private var namespace
     @Binding var selectedTab: Int
     private let content: Content
+    @State private var tabBarHeight: CGFloat = 0
     
     /// Creates a new bubble bar view.
     /// - Parameters:
@@ -57,6 +68,9 @@ public struct BubbleBarView<Content: View>: View {
             increasedContrast: colorSchemeContrast == .increased || forceHighContrast
         )
         
+        // Store the content padding value locally
+        let contentPadding = configuration.contentBottomPadding
+        
         return ZStack(alignment: .bottom) {
             _VariadicViewAdapter(content) { content in
                 ZStack {
@@ -64,6 +78,10 @@ public struct BubbleBarView<Content: View>: View {
                         content.children[index]
                             .transition(configuration.viewTransition)
                             .opacity(index == selectedTab ? 1 : 0)
+                            // Only apply padding if specifically requested
+                            .if(contentPadding > 0) { view in
+                                view.padding(.bottom, contentPadding)
+                            }
                     }
                 }
                 .animation(reduceMotion ? .default : configuration.viewTransitionAnimation, value: selectedTab)
@@ -136,6 +154,13 @@ public struct BubbleBarView<Content: View>: View {
             }
         }
         .ignoresSafeArea(.keyboard)
+        .onPreferenceChange(TabBarSizePreferenceKey.self) { height in
+            if contentPadding > 0 {
+                Task { @MainActor in 
+                    self.tabBarHeight = height
+                }
+            }
+        }
     }
     
     private func updateAccessibilitySettings() {
@@ -280,6 +305,20 @@ public extension View {
     func bubbleBar(selectedTab: Binding<Int>) -> some View {
         BubbleBarView(selectedTab: selectedTab) {
             self
+        }
+    }
+    
+    /// Sets the bottom padding for content to avoid overlap with the bubble bar.
+    /// - Parameter padding: The amount of bottom padding to apply to content
+    /// - Returns: A view with the specified bottom padding to avoid the bubble bar
+    ///
+    /// By default, no extra padding is added (padding = 0). With padding = 0, 
+    /// the content will respect the system's safe area insets and the tab bar will 
+    /// appear within the safe area. To add explicit spacing between content and 
+    /// the tab bar, set this to a positive value.
+    func bubbleBarContentPadding(_ padding: CGFloat) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.contentBottomPadding = padding
         }
     }
 }

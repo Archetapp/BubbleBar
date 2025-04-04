@@ -43,6 +43,8 @@ extension BubbleBar {
                 }
                 .clipShape(configuration.shape)
                 .padding(configuration.padding)
+                .preference(key: TabBarSizePreferenceKey.self, value: calculateTotalHeight())
+                .ignoresSafeArea(edges: .bottom)
         }
         
         /// Calculates the size of the container
@@ -50,6 +52,19 @@ extension BubbleBar {
             let width = configuration.size?.width ?? Screen.main.bounds.width - 32
             let height = configuration.size?.height ?? 60
             return CGSize(width: width, height: height)
+        }
+        
+        /// Calculates the total height including padding for content avoidance
+        private func calculateTotalHeight() -> CGFloat {
+            // Base height of the tab bar
+            let baseHeight = configuration.size?.height ?? 60
+            
+            // Add vertical padding of the tab bar container
+            let totalHeight = baseHeight + configuration.padding.top + configuration.padding.bottom
+            
+            // Only add extra margin if content padding is explicitly requested
+            let safeExtraMargin: CGFloat = configuration.contentBottomPadding > 0 ? 10 : 0
+            return totalHeight + safeExtraMargin
         }
         
         /// Creates a glass-like background effect
@@ -95,5 +110,14 @@ extension BubbleBar {
                     .shadow(color: theme.resolveColors(for: colorScheme).barShadowColor.opacity(0.3), radius: 12)
             }
         }
+    }
+}
+
+/// Preference key for the tab bar height
+struct TabBarSizePreferenceKey: PreferenceKey, Sendable {
+    static let defaultValue: CGFloat = 0
+    
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 } 

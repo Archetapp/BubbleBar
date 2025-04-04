@@ -15,6 +15,7 @@ A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar
   - [Creating Custom Styles](#creating-custom-styles)
 - [Advanced Customization](#advanced-customization)
   - [Animation Control](#animation-control)
+  - [Content Padding](#content-padding)
   - [Shape Customization](#shape-customization)
   - [Sizing Options](#sizing-options)
 - [Accessibility](#accessibility)
@@ -275,6 +276,32 @@ You can combine transitions for more complex effects:
     <p><strong>.bubbleBarAnimation(.spring(bounce: 0.6))</strong> - Bouncy spring effect</p>
   </div>
 </div>
+
+### Content Padding
+
+BubbleBar offers control over how content is padded to avoid overlapping with the tab bar:
+
+- By default (with `bubbleBarContentPadding(0)`), content respects the system's safe area insets
+- For custom spacing, use the `bubbleBarContentPadding(_:)` modifier with a positive value
+
+```swift
+BubbleBarView(selectedTab: $selectedTab) {
+    // Your tab content here
+}
+.bubbleBarContentPadding(0)  // Default - respects system safe areas
+```
+
+```swift
+BubbleBarView(selectedTab: $selectedTab) {
+    // Your tab content here
+}
+.bubbleBarContentPadding(20)  // Custom padding - adds 20pt of space above the tab bar
+```
+
+This is especially useful when:
+- You need precise control over the spacing between content and the tab bar
+- Your content needs more or less clearance than the default safe area provides
+- You're implementing a custom layout where the tab bar overlays part of the content
 
 ### Shape Customization
 

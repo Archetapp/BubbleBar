@@ -53,35 +53,30 @@ public struct ExampleGreen: View {
         ZStack(alignment: .bottomTrailing) {
             BubbleBarView(selectedTab: $selectedTab) {
                 view
-                    .edgesIgnoringSafeArea(.all)
                     .tabBarItem(
                         label: { Label(language.tabLabels[0], systemImage: "house.fill") },
                         accessibilityLabel: language.tabLabels[0]
                     )
                 
                 view
-                    .edgesIgnoringSafeArea(.all)
                     .tabBarItem(
                         label: { Label(language.tabLabels[1], systemImage: "timer") },
                         accessibilityLabel: language.tabLabels[1]
                     )
                 
                 view
-                    .edgesIgnoringSafeArea(.all)
                     .tabBarItem(
                         label: { Label(language.tabLabels[2], systemImage: "mail.stack") },
                         accessibilityLabel: language.tabLabels[2]
                     )
                 
                 view
-                    .edgesIgnoringSafeArea(.all)
                     .tabBarItem(
                         label: { Label(language.tabLabels[3], systemImage: "eraser") },
                         accessibilityLabel: language.tabLabels[3]
                     )
                 
                 view
-                    .edgesIgnoringSafeArea(.all)
                     .tabBarItem(
                         label: { Label(language.tabLabels[4], systemImage: "grid") },
                         accessibilityLabel: language.tabLabels[4]
@@ -95,7 +90,7 @@ public struct ExampleGreen: View {
     private var view: some View {
         ScrollView {
             LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
-                ForEach(0 ..< 3) { i in
+                ForEach(0 ..< 100) { i in
                     Text(language.helloWorldText)
                         .bold()
                         .font(.body.dynamic())
@@ -108,25 +103,24 @@ public struct ExampleGreen: View {
                 }
             }
             .padding()
-            .edgesIgnoringSafeArea(.all)
         }
-        .background(Color(.systemBackground))
+        .background(Color.black)
     }
 }
 
 // MARK: - Preview
 #Preview {
-    ExampleGreen()
-        .previewDisplayName("Light Mode")
-    
-    ExampleGreen()
-        .preferredColorScheme(.dark)
-        .previewDisplayName("Dark Mode")
-    
-    ExampleGreen(language: .arabic)
-        .environment(\.layoutDirection, .rightToLeft)
-        .previewDisplayName("RTL")
-        
+//    ExampleGreen()
+//        .previewDisplayName("Light Mode")
+//    
+//    ExampleGreen()
+//        .preferredColorScheme(.dark)
+//        .previewDisplayName("Dark Mode")
+//    
+//    ExampleGreen(language: .arabic)
+//        .environment(\.layoutDirection, .rightToLeft)
+//        .previewDisplayName("RTL")
+//        
     ExampleGreen(language: .japanese)
         .previewDisplayName("Japanese")
 }
