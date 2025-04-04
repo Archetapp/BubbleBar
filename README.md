@@ -19,7 +19,6 @@ A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar
   - [Sizing Options](#sizing-options)
 - [Accessibility](#accessibility)
 - [Localization and Multi-Language Support](#localization-and-multi-language-support)
-- [Best Practices](#best-practices)
 - [Requirements](#requirements)
 - [License](#license)
 
@@ -379,31 +378,6 @@ BubbleBar supports localization but doesn't include built-in translations - you'
 ```
 
 Test your implementation with different locale settings to ensure correct display across languages.
-
-## Best Practices
-
-### Performance
-
-- **Lazy load** tab content when appropriate
-- **Clean up resources** with `onDisappear` for tabs not in view
-
-### Design
-
-- Use **consistent icon styles** across tabs (preferably SF Symbols)
-- **Match theme colors** with your app's design system
-- Provide **adequate spacing** between items
-
-### Accessibility
-
-- **Test regularly** with assistive technologies
-- Ensure tab items have **clear, concise labels**
-- Use **system fonts** for automatic Dynamic Type adaptation
-
-### Integration
-
-- **Combine with NavigationStack** when appropriate
-- Use **suitable state management** for your app complexity
-- **Handle safe areas** consistently
 
 ## Requirements
 
