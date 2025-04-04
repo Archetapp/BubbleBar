@@ -311,33 +311,32 @@ NOTE: Padding is defaulted to 4 between inner items and outer shape. (Might make
 
 ## Accessibility
 
-BubbleBar is designed with accessibility as a priority, ensuring a great experience for all users including those who use assistive technologies.
+BubbleBar is designed with accessibility as a priority, ensuring a great experience for all users.
 
-### Supported Accessibility Features
+### Key Accessibility Features
 
-- **VoiceOver Support**: Each tab has appropriate accessibility labels and hints
-- **Dynamic Type**: Supports all text sizes including accessibility sizes
-- **Reduced Motion**: Automatically detects and adjusts animations for users with reduced motion enabled
-- **High Contrast**: Includes a high contrast theme and contrast-aware design for all themes
-- **Keyboard Navigation**: Full keyboard navigation support
-- **Right-to-Left Languages**: Complete RTL language support
+- **VoiceOver Support**: Proper accessibility labels, hints, and traits
+- **Dynamic Type**: Full support for all text sizes
+- **Reduced Motion**: Simplified animations when Reduce Motion is enabled
+- **High Contrast**: Accessible color themes with adequate contrast
+- **Keyboard Navigation**: Complete keyboard focus and selection support
+- **RTL Languages**: Right-to-left language support
 
-### Accessibility Implementation Checklist
+### Accessibility Checklist
 
-✅ **VoiceOver**: Tab items have proper labels, hints, and traits
-✅ **Dynamic Type**: Text and UI scales appropriately with system font size settings
-✅ **Reduced Motion**: Animations are disabled or simplified when Reduce Motion is enabled
-✅ **High Contrast**: All themes pass color contrast checks for readability
-✅ **RTL Support**: Layout automatically adjusts for right-to-left languages
-✅ **Keyboard Navigation**: Tab selection works with keyboard focus and activation
-✅ **Localization**: Supports multiple languages including English, Japanese, and Arabic
+- ✅ **VoiceOver**: Tab items have proper labels, hints, and traits
+- ✅ **Dynamic Type**: UI scales appropriately with system font size
+- ✅ **Reduced Motion**: Animations adapt when Reduce Motion is enabled
+- ✅ **High Contrast**: Themes pass color contrast requirements
+- ✅ **RTL Support**: Layout adjusts for right-to-left languages
+- ✅ **Keyboard Navigation**: Full keyboard interaction support
+- ✅ **Localization**: Support for multiple languages
 
-### Accessibility Implementation Guide
+### Implementation Guide
 
-When implementing BubbleBar in your app, consider the following best practices:
+When implementing BubbleBar in your app:
 
-1. **Provide Clear Labels**: When using the `tabBarItem` modifier, provide explicit accessibility labels:
-
+1. **Provide clear accessibility labels**:
 ```swift
 .tabBarItem(
     label: { Label("Home", systemImage: "house.fill") },
@@ -345,217 +344,66 @@ When implementing BubbleBar in your app, consider the following best practices:
 )
 ```
 
-2. **Custom Hints**: Provide custom accessibility hints if needed:
+2. **Test with assistive technologies** enabled:
+   - VoiceOver
+   - Dynamic Type (various sizes)
+   - Reduce Motion
+   - High Contrast
 
-```swift
-.tabBarItem(
-    label: { Label("Settings", systemImage: "gear") },
-    accessibilityLabel: "Settings", 
-    accessibilityHint: "View and change application settings"
-)
-```
-
-3. **Support Dynamic Type**: Ensure your tab content also supports dynamic type:
-
-```swift
-Text("Content")
-    .font(.body)  // System fonts automatically scale with Dynamic Type
-    .dynamicTypeSize(...DynamicTypeSize.accessibility5)  // Optional: limit maximum size
-```
-
-4. **Test with Assistive Technologies**: Test your implementation with:
-   - VoiceOver enabled
-   - Different Dynamic Type sizes
-   - Reduce Motion enabled
-   - High Contrast enabled
-   - RTL language settings
-
-### Accessibility Tests
-
-BubbleBar undergoes extensive accessibility testing to ensure compliance with accessibility standards. Our automated test suite checks:
-
-| Test Category | Description |
-|---------------|-------------|
-| Color Contrast | Verifies sufficient contrast between text/icons and backgrounds |
-| Touch Targets | Ensures touch targets meet minimum size requirements |
-| Dynamic Type | Tests UI adaptation to various text sizes |
-| Element Descriptions | Checks for proper element descriptions for assistive technologies |
-| VoiceOver | Verifies VoiceOver functionality and traits |
-| RTL Layout | Tests proper display in right-to-left languages |
-| Reduced Motion | Validates behavior when reduce motion is enabled |
-| Keyboard Navigation | Tests keyboard-based navigation and selection |
-| Language Support | Validates localization for multiple languages |
-
-These tests run across different configurations including light/dark modes, high contrast settings, and with various assistive technologies enabled.
+Our automated test suite verifies all accessibility features across different configurations including light/dark modes and various assistive technology settings.
 
 ## Localization and Multi-Language Support
 
-BubbleBar is designed to support localization and has been tested with multiple languages. However, it doesn't include built-in translations - you'll need to provide your own localized strings.
+BubbleBar supports localization but doesn't include built-in translations - you'll need to provide your own localized strings.
 
-### Language Support
+### Features
 
-The example application demonstrates localization for:
-- English
-- Japanese (日本語)
-- Arabic (العربية)
+- **RTL Support**: Layout automatically adjusts for right-to-left languages
+- **Example Localization**: The example app demonstrates English, Japanese, and Arabic
+- **Flexible Implementation**: Works with standard iOS localization patterns
 
-These examples show how to implement proper localization in your own apps using BubbleBar.
+### Implementation Guide
 
-### RTL Language Support
+1. **Create localization files** for each supported language
 
-BubbleBar automatically adjusts its layout for right-to-left languages:
-
-- Layout direction automatically flips
-- Tab order adapts to the reading direction
-- Animation direction follows the language direction
-
-### Implementing Your Own Localization
-
-To implement localization in your BubbleBar-based UI:
-
-1. **Create Localization Files**: Add `.strings` files for each language you want to support
-
-2. **Use Localization Keys**: Provide localized strings for your tab labels:
-
+2. **Use localization keys** for tab labels:
 ```swift
-// Using SwiftUI's built-in localization
 .tabBarItem {
-    Label(NSLocalizedString("Home", comment: "Home tab label"), systemImage: "house.fill")
-}
-
-// Or using LocalizedStringKey for SwiftUI
-.tabBarItem {
-    Label(LocalizedStringKey("HomeTab"), systemImage: "house.fill")
+    Label(NSLocalizedString("Home", comment: "Home tab"), systemImage: "house.fill")
 }
 ```
 
-3. **Accessibility Labels**: Ensure accessibility labels are also localized:
-
+3. **Enable RTL support** automatically:
 ```swift
-.tabBarItem(
-    label: { Label(NSLocalizedString("Settings", comment: "Settings tab"), systemImage: "gear") },
-    accessibilityLabel: NSLocalizedString("Settings", comment: "Settings tab accessibility label")
-)
-```
-
-4. **RTL Support**: Enable RTL support automatically with SwiftUI's environment:
-
-```swift
-BubbleBarView(selectedTab: $selectedTab) {
-    // Tab content
-}
 .environment(\.layoutDirection, Locale.current.languageDirection == .rightToLeft ? .rightToLeft : .leftToRight)
 ```
 
-### Testing Localization
-
-To test your localized BubbleBar implementation:
-
-1. Add localized string files (.strings) for each supported language
-2. Set appropriate accessibility identifiers for testing
-3. Run the app with different locale settings
-4. Verify text and layout appears correctly in all languages
-
-Our test suite includes automated tests for multiple languages and RTL support to ensure the component works correctly across different localization scenarios.
+Test your implementation with different locale settings to ensure correct display across languages.
 
 ## Best Practices
 
-Here are some best practices for implementing BubbleBar in your applications:
+### Performance
 
-### Performance Optimization
+- **Lazy load** tab content when appropriate
+- **Clean up resources** with `onDisappear` for tabs not in view
 
-1. **Lazy Loading**: Use lazy loading for tab content when appropriate:
+### Design
 
-```swift
-BubbleBarView(selectedTab: $selectedTab) {
-    LazyView { HomeView() }
-        .tabBarItem { Label("Home", systemImage: "house.fill") }
-    
-    LazyView { SettingsView() }
-        .tabBarItem { Label("Settings", systemImage: "gear") }
-}
-```
-
-2. **Memory Management**: Use `onDisappear` to clean up resources when views are not visible:
-
-```swift
-MyTabContent()
-    .onDisappear {
-        // Clean up resources
-    }
-    .tabBarItem { Label("Tab", systemImage: "star") }
-```
-
-### UI Design
-
-1. **Consistent Icons**: Maintain consistent icon styles across tabs:
-   - Use SF Symbols when possible
-   - Keep similar visual weight between icons
-   - Use filled versions for selected state if appropriate
-
-2. **Color Coordination**: Match BubbleBar theme with your app's color scheme:
-
-```swift
-// Using your app's accent color
-let customStyle = BubbleBar.Style.copying(.dark) { colors in
-    var colors = colors
-    colors.selectedItemColor = Color.accentColor
-    colors.bubbleBackgroundColor = Color.accentColor.opacity(0.15)
-    return colors
-}
-```
-
-3. **Spacing**: Provide adequate spacing between items:
-
-```swift
-BubbleBarView(selectedTab: $selectedTab) {
-    // Content
-}
-.bubbleBarPadding(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
-```
+- Use **consistent icon styles** across tabs (preferably SF Symbols)
+- **Match theme colors** with your app's design system
+- Provide **adequate spacing** between items
 
 ### Accessibility
 
-1. **Test with Assistive Technologies**: Regularly test with VoiceOver, different text sizes, and contrast settings.
-
-2. **Provide Good Labels**: Ensure tab items have clear, concise labels that make sense when read aloud.
-
-3. **Use System Fonts**: System fonts automatically adapt to Dynamic Type settings.
+- **Test regularly** with assistive technologies
+- Ensure tab items have **clear, concise labels**
+- Use **system fonts** for automatic Dynamic Type adaptation
 
 ### Integration
 
-1. **Navigation Integration**: Combine with NavigationStack when appropriate:
-
-```swift
-NavigationStack {
-    BubbleBarView(selectedTab: $selectedTab) {
-        // Tab content
-    }
-    .navigationTitle(titles[selectedTab])
-}
-```
-
-2. **State Management**: Use appropriate state management for your app size:
-
-```swift
-// For smaller apps
-@State private var selectedTab = 0
-
-// For larger apps with more complex state
-@EnvironmentObject var appState: AppState
-// ...
-BubbleBarView(selectedTab: $appState.selectedTab)
-```
-
-3. **Safe Area Handling**: Respect safe areas appropriately:
-
-```swift
-BubbleBarView(selectedTab: $selectedTab) {
-    TabContent()
-        .edgesIgnoringSafeArea([.horizontal, .top]) // Custom safe area handling
-        .tabBarItem { /* ... */ }
-}
-```
+- **Combine with NavigationStack** when appropriate
+- Use **suitable state management** for your app complexity
+- **Handle safe areas** consistently
 
 ## Requirements
 
