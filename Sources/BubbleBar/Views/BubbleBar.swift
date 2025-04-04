@@ -78,7 +78,6 @@ public struct BubbleBarView<Content: View>: View {
                         content.children[index]
                             .transition(configuration.viewTransition)
                             .opacity(index == selectedTab ? 1 : 0)
-                            // Only apply padding if specifically requested
                             .if(contentPadding > 0) { view in
                                 view.padding(.bottom, contentPadding)
                             }
@@ -120,8 +119,8 @@ public struct BubbleBarView<Content: View>: View {
                             }
                         }
                     }
-                    // Constrain the HStack height to prevent overflow
                     .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)

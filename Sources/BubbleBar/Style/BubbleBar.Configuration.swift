@@ -15,6 +15,7 @@ extension BubbleBar {
         public var shape: AnyShape
         public var itemShape: AnyShape
         public var padding: EdgeInsets
+        public var bubbleBarItemPadding: EdgeInsets
         public var equalItemSizing: Bool
         
         // Shadow properties
@@ -44,9 +45,10 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
-            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 25)),
-            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 20)),
-            padding: EdgeInsets = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16),
+            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
+            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
+            padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             shadowRadius: CGFloat = 1,
             shadowOffset: CGPoint = .zero,
@@ -71,6 +73,7 @@ extension BubbleBar {
             self.shape = shape
             self.itemShape = itemShape
             self.padding = padding
+            self.bubbleBarItemPadding = bubbleBarItemPadding
             self.equalItemSizing = equalItemSizing
             self.shadowRadius = shadowRadius
             self.shadowOffset = shadowOffset
@@ -101,9 +104,10 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
-            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 25)),
-            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 20)),
-            padding: EdgeInsets = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16),
+            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
+            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
+            padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             shadowRadius: CGFloat = 8,
             shadowOffset: CGPoint = .zero,
@@ -135,6 +139,7 @@ extension BubbleBar {
                 shape: shape,
                 itemShape: itemShape,
                 padding: padding,
+                bubbleBarItemPadding: bubbleBarItemPadding,
                 equalItemSizing: equalItemSizing,
                 shadowRadius: shadowRadius,
                 shadowOffset: shadowOffset,
@@ -172,6 +177,14 @@ extension BubbleBar {
                     leading: max(6, self.padding.leading),
                     bottom: self.padding.bottom,
                     trailing: max(6, self.padding.trailing)
+                )
+                
+                // Adjust item padding for accessibility
+                self.bubbleBarItemPadding = EdgeInsets(
+                    top: max(10, self.bubbleBarItemPadding.top),
+                    leading: max(8, self.bubbleBarItemPadding.leading),
+                    bottom: max(10, self.bubbleBarItemPadding.bottom),
+                    trailing: max(8, self.bubbleBarItemPadding.trailing)
                 )
             }
             

@@ -49,9 +49,8 @@ extension BubbleBar {
                     }
                 }
                 .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
-                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 8 : 6)
-                .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 10 : 8)
-                .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: true)
+                .padding(configuration.bubbleBarItemPadding)
+                .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
                 .background {
                     if isSelected {
                         ZStack {
@@ -68,7 +67,7 @@ extension BubbleBar {
             }
             .buttonStyle(.plain)
             .frame(maxWidth: configuration.equalItemSizing ? .infinity : nil)
-            .animation(reduceMotion ? .easeOut(duration: 0.15) : .default, value: isSelected && showLabel)
+            .animation(reduceMotion ? .easeOut(duration: 0.15) : configuration.animation, value: isSelected && showLabel)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityHint(accessibilityHint)
@@ -76,7 +75,6 @@ extension BubbleBar {
             .accessibilityAddTraits(isSelected ? [.isSelected, .isButton, .isTabBar] : [.isButton, .isTabBar])
             .accessibilityIdentifier("TabItem-\(index)")
             .contentShape(Rectangle())
-            .padding(dynamicTypeSize.isAccessibilitySize ? 4 : 2)
         }
         
         /// Gets the accessibility label from the label view using reflection

@@ -91,7 +91,7 @@ public struct ExampleGreen: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
-                    ForEach(0 ..< 100) { i in
+                    ForEach(0 ..< 3) { i in
                         NavigationLink {
                             Color.green
                         } label: {
