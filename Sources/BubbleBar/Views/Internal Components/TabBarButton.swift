@@ -22,23 +22,29 @@ extension BubbleBar {
                 HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 8 : 4) {
                     label
                         .labelStyle(.iconOnly)
-                        .font(.title3.weight(.regular))
-                        .frame(width: dynamicTypeSize.isAccessibilitySize ? 32 : 24, 
-                               height: dynamicTypeSize.isAccessibilitySize ? 32 : 24)
+                        .font(.title3.weight(.regular).leading(.loose))
+                        .minimumScaleFactor(0.8)
+                        .frame(width: dynamicTypeSize.isAccessibilitySize ? 36 : 24, 
+                               height: dynamicTypeSize.isAccessibilitySize ? 36 : 24)
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
                         }
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility5)
+                        .accessibility(label: Text(accessibilityLabel))
                     
                     if isSelected && showLabel {
                         label
                             .labelStyle(.titleOnly)
-                            .font(.body.weight(.medium))
+                            .font(.body.weight(.medium).leading(.loose))
+                            .minimumScaleFactor(0.8)
+                            .lineLimit(1)
                             .foregroundColor(theme.resolveColors(for: colorScheme).selectedItemColor)
                             .if(!reduceMotion) { view in
                                 view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
                             }
                             .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .leading)))
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility5)
                     }
                 }
                 .frame(minWidth: 20, maxWidth: isSelected && configuration.equalItemSizing ? .infinity : nil)
@@ -66,7 +72,9 @@ extension BubbleBar {
             .accessibilityLabel(accessibilityLabel)
             .accessibilityHint(accessibilityHint)
             .accessibilityValue(isSelected ? "Selected" : "")
-            .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
+            .accessibilityAddTraits(isSelected ? [.isSelected, .isButton, .isTabBar] : [.isButton, .isTabBar])
+            .accessibilityIdentifier("TabItem-\(index)")
+            .frame(minWidth: 44, minHeight: 44)
         }
         
         private var accessibilityLabel: String {
@@ -86,6 +94,8 @@ extension BubbleBar {
 extension Font {
     var dynamic: Font {
         self.leading(.loose)
+            .weight(.regular)
+            .uppercaseSmallCaps()
     }
 }
 

@@ -41,13 +41,13 @@ public struct BubbleBarView<Content: View>: View {
         self._selectedTab = selectedTab
         self.content = content()
         
-        // Initialize accessibility settings immediately
-        let config = BubbleBar.Configuration()
-        config.updateForAccessibility(
-            dynamicTypeSize: DynamicTypeSize.large, // Default value, will be updated by environment
-            reduceMotion: false,
-            reduceTransparency: false,
-            increasedContrast: false
+        // Initialize accessibility settings immediately 
+        // This ensures accessibility properties are properly set on initial render
+        let _ = BubbleBar.Configuration().updateForAccessibility(
+            dynamicTypeSize: DynamicTypeSize.large,
+            reduceMotion: UIAccessibility.isReduceMotionEnabled,
+            reduceTransparency: UIAccessibility.isReduceTransparencyEnabled,
+            increasedContrast: UIAccessibility.isDarkerSystemColorsEnabled
         )
     }
     
@@ -65,7 +65,6 @@ public struct BubbleBarView<Content: View>: View {
                 ZStack {
                     ForEach(content.children.indices, id: \.self) { index in
                         content.children[index]
-                            .transition(configuration.viewTransition)
                             .opacity(index == selectedTab ? 1 : 0)
                     }
                 }
@@ -87,11 +86,12 @@ public struct BubbleBarView<Content: View>: View {
                                     action: {
                                         withAnimation(reduceMotion ? .default : configuration.animation) {
                                             selectedTab = index
-                                            // Announce tab change for VoiceOver
+                                            #if canImport(UIKit)
                                             UIAccessibility.post(
                                                 notification: .screenChanged,
                                                 argument: "Switched to \(itemInfo.accessibilityLabel)"
                                             )
+                                            #endif
                                         }
                                     }
                                 )
@@ -118,6 +118,8 @@ public struct BubbleBarView<Content: View>: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Navigation")
             .accessibilityHint("Tab bar for switching between different views")
+            .accessibilityIdentifier("BubbleBar")
+            .accessibilityAddTraits(.isTabBar)
             .offset(y: configuration.isVisible ? 0 : 100)
             .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
             .onChange(of: dynamicTypeSize) { _, _ in

@@ -41,20 +41,25 @@ public struct ExampleGreen: View {
                     Label("Grid", systemImage: "grid")
                 }
         }
-        .bubbleBarStyle(.highContrast)
     }
     
     var view: some View {
         ScrollView {
             LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
                 ForEach(0 ..< 300) { i in
-                    Text("Hello World").bold()
+                    Text("Hello World")
+                        .bold()
+                        .font(.body.dynamic)
+                        .foregroundColor(.primary)
+                        .padding(8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility5)
                 }
             }
             .padding()
             .edgesIgnoringSafeArea(.all)
         }
-        .background(Color.blue.opacity(.random(in: 0.2 ... 0.6)))
+        .background(Color(.systemBackground))
     }
 }
 
