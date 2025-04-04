@@ -1,11 +1,12 @@
 // Created By Jared Davidson
 
-import SwiftUI
+import SwiftUIX
 
 extension BubbleBar {
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
         public var style: Style
+        internal var originalStyle: Style
         public var animation: Animation
         public var viewTransitionAnimation: Animation
         public var viewTransition: AnyTransition
@@ -27,6 +28,12 @@ extension BubbleBar {
         public var glassTint: Color
         public var isVisible: Bool
         
+        // Accessibility properties
+        public var minimumTouchTargetSize: CGSize
+        public var accessibilitySpacing: EdgeInsets
+        public var useReducedMotion: Bool
+        public var increasedContrastEnabled: Bool
+        
         public init(
             style: Style = .forest,
             animation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
@@ -44,9 +51,14 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
-            isVisible: Bool = true
+            isVisible: Bool = true,
+            minimumTouchTargetSize: CGSize = CGSize(width: 44, height: 44),
+            accessibilitySpacing: EdgeInsets = EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24),
+            useReducedMotion: Bool = false,
+            increasedContrastEnabled: Bool = false
         ) {
-            self.style = style
+            self.style = increasedContrastEnabled ? .highContrast : style
+            self.originalStyle = style  // Store the original style
             self.animation = animation
             self.viewTransitionAnimation = viewTransitionAnimation
             self.viewTransition = viewTransition
@@ -63,6 +75,12 @@ extension BubbleBar {
             self.glassOpacity = glassOpacity
             self.glassTint = glassTint
             self.isVisible = isVisible
+            
+            // Initialize accessibility properties
+            self.minimumTouchTargetSize = minimumTouchTargetSize
+            self.accessibilitySpacing = accessibilitySpacing
+            self.useReducedMotion = useReducedMotion
+            self.increasedContrastEnabled = increasedContrastEnabled
         }
         
         /// Convenience initializer for direct color customization
@@ -120,6 +138,41 @@ extension BubbleBar {
                 glassTint: glassTint,
                 isVisible: isVisible
             )
+        }
+        
+        /// Updates the configuration based on the current accessibility settings
+        public func updateForAccessibility(
+            dynamicTypeSize: DynamicTypeSize,
+            reduceMotion: Bool,
+            reduceTransparency: Bool,
+            increasedContrast: Bool
+        ) {
+            // Update motion settings
+            useReducedMotion = reduceMotion
+            if reduceMotion {
+                animation = .default
+                viewTransitionAnimation = .default
+            }
+            
+            // Update transparency settings
+            isGlass = !reduceTransparency
+            
+            // Update contrast settings
+            increasedContrastEnabled = increasedContrast || dynamicTypeSize.isAccessibilitySize
+            if increasedContrastEnabled {
+                style = .highContrast
+            } else {
+                style = originalStyle  // Restore the original style when contrast is disabled
+            }
+            
+            // Update spacing for accessibility sizes
+            if dynamicTypeSize.isAccessibilitySize {
+                padding = accessibilitySpacing
+                size = CGSize(
+                    width: size?.width ?? Screen.main.bounds.width - 32,
+                    height: max(size?.height ?? 54, 64)
+                )
+            }
         }
     }
 }

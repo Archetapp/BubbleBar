@@ -1,10 +1,11 @@
 // Created By Jared Davidson
 
-import SwiftUI
+import SwiftUIX
 
 extension BubbleBar {
     internal struct _TabBarContainer<ContainerContent: View>: View {
         @Environment(\.theme) private var theme
+        @Environment(\.colorScheme) private var colorScheme
         @Environment(\.bubbleBarConfiguration) private var configuration
         let content: ContainerContent
         
@@ -27,10 +28,10 @@ extension BubbleBar {
                         glassBackground
                     } else {
                         configuration.shape
-                            .fill(theme.colors.cardBackground)
+                            .fill(theme.resolveColors(for: colorScheme).cardBackground)
                             .overlay {
                                 configuration.shape
-                                    .stroke(theme.colors.barStrokeColor, lineWidth: 0.5)
+                                    .stroke(theme.resolveColors(for: colorScheme).barStrokeColor, lineWidth: 0.5)
                             }
                     }
                 }
@@ -39,7 +40,7 @@ extension BubbleBar {
         }
         
         private var size: CGSize {
-            let width = configuration.size?.width ?? UIScreen.main.bounds.width - 32
+            let width = configuration.size?.width ?? Screen.main.bounds.width - 32
             let height = configuration.size?.height ?? 60
             return CGSize(width: width, height: height)
         }
@@ -47,7 +48,7 @@ extension BubbleBar {
         private var glassBackground: some View {
             GeometryReader { geometry in
                 let size = geometry.size
-                let tintColor = theme.colors.cardBackground
+                let tintColor = theme.resolveColors(for: colorScheme).cardBackground
                 
                 configuration.shape
                     .fill(Material.ultraThinMaterial)
@@ -83,7 +84,7 @@ extension BubbleBar {
                         configuration.shape
                             .stroke(tintColor.opacity(0.3), lineWidth: 1)
                     }
-                    .shadow(color: theme.colors.barShadowColor.opacity(0.3), radius: 12)
+                    .shadow(color: theme.resolveColors(for: colorScheme).barShadowColor.opacity(0.3), radius: 12)
             }
         }
     }

@@ -30,13 +30,10 @@ internal struct ExampleComplex: View {
         }
         .bubbleBarStyle(
             .init(
-                selectedItemColor: Color.black,
-                unselectedItemColor: Color.white,
-                bubbleBackgroundColor: Color.white,
-                bubbleStrokeColor: Color.black,
-                barBackgroundColor: Color.black,
-                barStrokeColor: Color.clear,
-                barShadowColor: Color.black
+                selectedItemColor: Color.white,
+                unselectedItemColor: Color.green,
+                bubbleBackgroundColor: Color.black,
+                barBackgroundColor: Color.white
             )
         )
         .bubbleBarAnimation(.bouncy)
@@ -48,10 +45,10 @@ internal struct ExampleComplex: View {
         .bubbleBarItemEqualSizing(true)
         .bubbleBarPadding(.zero)
         .showsBubbleBar(self.isShowingTabBar)
-        .bubbleBarGlass()
     }
 }
 
 #Preview {
     ExampleComplex()
+        .preferredColorScheme(.dark)
 }

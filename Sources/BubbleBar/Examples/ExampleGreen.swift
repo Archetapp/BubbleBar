@@ -2,11 +2,14 @@
 
 import SwiftUI
 
-internal struct ExampleGreen: View {
+public struct ExampleGreen: View {
     @State private var selectedTab = 0
-    @Environment(\.theme) var theme
     
-    var body: some View {
+    public init() {
+        self.selectedTab = selectedTab
+    }
+    
+    public var body: some View {
         BubbleBarView(selectedTab: $selectedTab) {
             view
                 .edgesIgnoringSafeArea(.all)
@@ -38,18 +41,7 @@ internal struct ExampleGreen: View {
                     Label("Grid", systemImage: "grid")
                 }
         }
-//        .bubbleBarStyle(
-//            .init(
-//                selectedItemColor: <#T##Color#>,
-//                unselectedItemColor: <#T##Color#>,
-//                bubbleBackgroundColor: <#T##Color#>,
-//                bubbleStrokeColor: <#T##Color#>,
-//                barBackgroundColor: <#T##Color#>,
-//                barStrokeColor: <#T##Color#>,
-//                barShadowColor: <#T##Color#>
-//            )
-//        )
-        .bubbleBarGlass()
+        .bubbleBarStyle(.highContrast)
     }
     
     var view: some View {
@@ -68,4 +60,5 @@ internal struct ExampleGreen: View {
 
 #Preview {
     ExampleGreen()
+//        .preferredColorScheme(.dark)
 }

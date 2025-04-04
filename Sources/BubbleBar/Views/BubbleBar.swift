@@ -24,6 +24,11 @@ public enum BubbleBar {}
 /// ```
 public struct BubbleBarView<Content: View>: View {
     @Environment(\.bubbleBarConfiguration) private var configuration
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.colorScheme) private var colorScheme
     @Namespace private var namespace
     @Binding var selectedTab: Int
     private let content: Content
@@ -35,10 +40,27 @@ public struct BubbleBarView<Content: View>: View {
     public init(selectedTab: Binding<Int>, @ViewBuilder content: () -> Content) {
         self._selectedTab = selectedTab
         self.content = content()
+        
+        // Initialize accessibility settings immediately
+        let config = BubbleBar.Configuration()
+        config.updateForAccessibility(
+            dynamicTypeSize: DynamicTypeSize.large, // Default value, will be updated by environment
+            reduceMotion: false,
+            reduceTransparency: false,
+            increasedContrast: false
+        )
     }
     
     public var body: some View {
-        ZStack(alignment: .bottom) {
+        // Update accessibility settings immediately
+        let _ = configuration.updateForAccessibility(
+            dynamicTypeSize: dynamicTypeSize,
+            reduceMotion: reduceMotion,
+            reduceTransparency: reduceTransparency,
+            increasedContrast: colorSchemeContrast == .increased
+        )
+        
+        return ZStack(alignment: .bottom) {
             _VariadicViewAdapter(content) { content in
                 ZStack {
                     ForEach(content.children.indices, id: \.self) { index in
@@ -47,7 +69,7 @@ public struct BubbleBarView<Content: View>: View {
                             .opacity(index == selectedTab ? 1 : 0)
                     }
                 }
-                .animation(configuration.viewTransitionAnimation, value: selectedTab)
+                .animation(reduceMotion ? .default : configuration.viewTransitionAnimation, value: selectedTab)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
@@ -55,19 +77,27 @@ public struct BubbleBarView<Content: View>: View {
                 _VariadicViewAdapter(content) { content in
                     HStack {
                         ForEach(content.children.indices, id: \.self) { index in
-                            if let label = content.children[index].traits.tabBarLabel {
+                            if let itemInfo = content.children[index].traits.tabBarLabel {
                                 BubbleBar._TabBarButton(
-                                    label: label,
+                                    label: itemInfo.label,
                                     isSelected: selectedTab == index,
                                     index: index,
                                     namespace: namespace,
                                     showLabel: configuration.showLabels,
                                     action: {
-                                        withAnimation(configuration.animation) {
+                                        withAnimation(reduceMotion ? .default : configuration.animation) {
                                             selectedTab = index
+                                            // Announce tab change for VoiceOver
+                                            UIAccessibility.post(
+                                                notification: .screenChanged,
+                                                argument: "Switched to \(itemInfo.accessibilityLabel)"
+                                            )
                                         }
                                     }
                                 )
+                                .accessibilityLabel(itemInfo.accessibilityLabel)
+                                .accessibilityHint(itemInfo.accessibilityHint)
+                                
                                 if index != content.children.indices.last && !configuration.equalItemSizing {
                                     Spacer()
                                 }
@@ -76,21 +106,43 @@ public struct BubbleBarView<Content: View>: View {
                     }
                 }
             }
-            .animation(configuration.animation, value: selectedTab)
+            .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
             .environment(\.theme, configuration.style.theme)
             .compositingGroup()
             .shadow(
-                color: configuration.style.theme.colors.barShadowColor,
+                color: configuration.style.theme.colors(for: colorScheme).barShadowColor,
                 radius: configuration.shadowRadius,
                 x: configuration.shadowOffset.x,
                 y: configuration.shadowOffset.y
             )
             .accessibilityElement(children: .contain)
-            .accessibilityLabel("Tab Bar")
+            .accessibilityLabel("Navigation")
+            .accessibilityHint("Tab bar for switching between different views")
             .offset(y: configuration.isVisible ? 0 : 100)
-            .animation(configuration.animation, value: configuration.isVisible)
+            .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
+            .onChange(of: dynamicTypeSize) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: reduceMotion) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: reduceTransparency) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: colorSchemeContrast) { _, _ in
+                updateAccessibilitySettings()
+            }
         }
         .ignoresSafeArea(.keyboard)
+    }
+    
+    private func updateAccessibilitySettings() {
+        configuration.updateForAccessibility(
+            dynamicTypeSize: dynamicTypeSize,
+            reduceMotion: reduceMotion,
+            reduceTransparency: reduceTransparency,
+            increasedContrast: colorSchemeContrast == .increased
+        )
     }
 }
 
@@ -101,7 +153,12 @@ public extension View {
     /// - Returns: A view with the modified bubble bar style
     func bubbleBarStyle(_ style: BubbleBar.Style) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.style = style
+            if config.increasedContrastEnabled {
+                config.originalStyle = style  // Store the new style as original
+            } else {
+                config.style = style  // Apply the style directly
+                config.originalStyle = style  // Store as original
+            }
         }
     }
     
