@@ -138,19 +138,19 @@ extension BubbleBar {
             Style { colorScheme in
                 let isDark = colorScheme == .dark
                 
-                // Use system defined accessibility colors for maximum compliance
+                // Use pure black and white for maximum contrast
                 let foreground = isDark ? Color.white : Color.black
                 let background = isDark ? Color.black : Color.white
                 
                 return Style(
                     // Use full opacity for text elements to ensure maximum contrast
                     selectedItemColor: foreground,
-                    unselectedItemColor: foreground.opacity(0.8),
-                    // Use a more visible bubble background with sufficient contrast
-                    bubbleBackgroundColor: (isDark ? Color(.systemBlue) : Color(.systemBlue)).opacity(0.3),
-                    bubbleStrokeColor: foreground.opacity(0.7),
+                    unselectedItemColor: foreground.opacity(0.7),
+                    // Use a visible bubble background with strong contrast
+                    bubbleBackgroundColor: (isDark ? Color.white.opacity(0.2) : Color.black.opacity(0.1)),
+                    bubbleStrokeColor: foreground,
                     barBackgroundColor: background,
-                    barStrokeColor: foreground.opacity(0.5),
+                    barStrokeColor: foreground,
                     barShadowColor: Color.clear
                 )
             }

@@ -3,25 +3,31 @@
 import SwiftUIX
 
 extension BubbleBar {
+    /// Internal container view for the tab bar
     internal struct _TabBarContainer<ContainerContent: View>: View {
         @Environment(\.theme) private var theme
         @Environment(\.colorScheme) private var colorScheme
         @Environment(\.bubbleBarConfiguration) private var configuration
-        let content: ContainerContent
         
-        init(@ViewBuilder content: () -> ContainerContent) {
+        /// The content inside the container
+        private let content: ContainerContent
+        
+        /// Creates a new container with the given content
+        /// - Parameter content: The content to display inside the container
+        internal init(@ViewBuilder content: () -> ContainerContent) {
             self.content = content()
         }
         
         var body: some View {
             content
-                .padding(.horizontal, 8)
+                .padding(.horizontal, configuration.isGlass ? 10 : 8)
                 .padding(.vertical, 6)
                 .frame(
                     minWidth: configuration.size?.width,
                     maxWidth: configuration.size == nil ? nil : configuration.size?.width,
                     minHeight: configuration.size?.height,
-                    maxHeight: configuration.size == nil ? nil : configuration.size?.height
+                    maxHeight: configuration.size?.height ?? 64,
+                    alignment: .center
                 )
                 .background {
                     if configuration.isGlass {
@@ -39,12 +45,14 @@ extension BubbleBar {
                 .padding(configuration.padding)
         }
         
+        /// Calculates the size of the container
         private var size: CGSize {
             let width = configuration.size?.width ?? Screen.main.bounds.width - 32
             let height = configuration.size?.height ?? 60
             return CGSize(width: width, height: height)
         }
         
+        /// Creates a glass-like background effect
         private var glassBackground: some View {
             GeometryReader { geometry in
                 let size = geometry.size

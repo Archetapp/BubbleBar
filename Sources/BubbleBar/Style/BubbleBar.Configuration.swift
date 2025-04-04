@@ -146,33 +146,68 @@ extension BubbleBar {
             reduceMotion: Bool,
             reduceTransparency: Bool,
             increasedContrast: Bool
-        ) {
-            // Update motion settings
-            useReducedMotion = reduceMotion
-            if reduceMotion {
-                animation = .default
-                viewTransitionAnimation = .default
-            }
+        ) -> BubbleBar.Configuration {
+            // Store the state
+            self.useReducedMotion = reduceMotion
+            self.increasedContrastEnabled = increasedContrast
             
-            // Update transparency settings
-            isGlass = !reduceTransparency
-            
-            // Update contrast settings
-            increasedContrastEnabled = increasedContrast || dynamicTypeSize.isAccessibilitySize
-            if increasedContrastEnabled {
-                style = .highContrast
-            } else {
-                style = originalStyle  // Restore the original style when contrast is disabled
-            }
-            
-            // Update spacing for accessibility sizes
+            // Apply size adjustments for accessibility
             if dynamicTypeSize.isAccessibilitySize {
-                padding = accessibilitySpacing
-                size = CGSize(
-                    width: size?.width ?? Screen.main.bounds.width - 32,
-                    height: max(size?.height ?? 54, 64)
+                // Limit the size to prevent overflow
+                let height: CGFloat = max(54, min(64, 64))
+                if let currentSize = self.size {
+                    self.size = CGSize(width: currentSize.width, height: height)
+                }
+                
+                // Adjust padding
+                self.padding = EdgeInsets(
+                    top: self.padding.top,
+                    leading: max(6, self.padding.leading),
+                    bottom: self.padding.bottom,
+                    trailing: max(6, self.padding.trailing)
                 )
             }
+            
+            // Apply high contrast if needed - first check system setting, then parameter
+            #if canImport(UIKit)
+            let isSystemHighContrastEnabled = UIAccessibility.isDarkerSystemColorsEnabled
+            #else
+            let isSystemHighContrastEnabled = false
+            #endif
+            
+            let shouldUseHighContrast = isSystemHighContrastEnabled || increasedContrast
+            
+            if shouldUseHighContrast {
+                self.style = .highContrast
+            } else if self.originalStyle != nil {
+                self.style = self.originalStyle
+            }
+            
+            // Simplify animations for reduced motion
+            if reduceMotion {
+                self.animation = .default
+                self.viewTransitionAnimation = .default
+                self.viewTransition = .opacity
+            }
+            
+            // Disable glass effect for reduced transparency
+            if reduceTransparency {
+                self.isGlass = false
+                
+                // Also ensure sufficient contrast
+                let newStyle = Style.copying(self.style) { colors in
+                    var colors = colors
+                    // Get the current bubble background opacity
+                    let bubbleColorOpacity: Double = 0.9
+                    
+                    // Ensure solid backgrounds by setting explicit opacity
+                    colors.bubbleBackgroundColor = colors.bubbleBackgroundColor.opacity(bubbleColorOpacity)
+                    return colors
+                }
+                self.style = newStyle
+            }
+            
+            return self
         }
     }
 }

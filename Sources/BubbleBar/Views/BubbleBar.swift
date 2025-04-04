@@ -41,23 +41,20 @@ public struct BubbleBarView<Content: View>: View {
         self._selectedTab = selectedTab
         self.content = content()
         
-        // Initialize accessibility settings immediately 
-        // This ensures accessibility properties are properly set on initial render
-        let _ = BubbleBar.Configuration().updateForAccessibility(
-            dynamicTypeSize: DynamicTypeSize.large,
-            reduceMotion: UIAccessibility.isReduceMotionEnabled,
-            reduceTransparency: UIAccessibility.isReduceTransparencyEnabled,
-            increasedContrast: UIAccessibility.isDarkerSystemColorsEnabled
-        )
+        // Note: We don't need to initialize here since the environment configuration
+        // will be updated in the body when the view loads
     }
     
     public var body: some View {
+        // Check if high contrast mode is forced via launch arguments (useful for testing)
+        let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
+        
         // Update accessibility settings immediately
         let _ = configuration.updateForAccessibility(
             dynamicTypeSize: dynamicTypeSize,
             reduceMotion: reduceMotion,
             reduceTransparency: reduceTransparency,
-            increasedContrast: colorSchemeContrast == .increased
+            increasedContrast: colorSchemeContrast == .increased || forceHighContrast
         )
         
         return ZStack(alignment: .bottom) {
@@ -65,6 +62,7 @@ public struct BubbleBarView<Content: View>: View {
                 ZStack {
                     ForEach(content.children.indices, id: \.self) { index in
                         content.children[index]
+                            .transition(configuration.viewTransition)
                             .opacity(index == selectedTab ? 1 : 0)
                     }
                 }
@@ -74,7 +72,7 @@ public struct BubbleBarView<Content: View>: View {
             
             BubbleBar._TabBarContainer {
                 _VariadicViewAdapter(content) { content in
-                    HStack {
+                    HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 4 : 2) {
                         ForEach(content.children.indices, id: \.self) { index in
                             if let itemInfo = content.children[index].traits.tabBarLabel {
                                 BubbleBar._TabBarButton(
@@ -99,11 +97,13 @@ public struct BubbleBarView<Content: View>: View {
                                 .accessibilityHint(itemInfo.accessibilityHint)
                                 
                                 if index != content.children.indices.last && !configuration.equalItemSizing {
-                                    Spacer()
+                                    Spacer(minLength: dynamicTypeSize.isAccessibilitySize ? 1 : 0)
                                 }
                             }
                         }
                     }
+                    // Constrain the HStack height to prevent overflow
+                    .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
                 }
             }
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
@@ -139,11 +139,15 @@ public struct BubbleBarView<Content: View>: View {
     }
     
     private func updateAccessibilitySettings() {
-        configuration.updateForAccessibility(
+        // Check if high contrast mode is forced via launch arguments (useful for testing)
+        let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
+        
+        // Apply the updated configuration
+        _ = configuration.updateForAccessibility(
             dynamicTypeSize: dynamicTypeSize,
             reduceMotion: reduceMotion,
             reduceTransparency: reduceTransparency,
-            increasedContrast: colorSchemeContrast == .increased
+            increasedContrast: colorSchemeContrast == .increased || forceHighContrast
         )
     }
 }

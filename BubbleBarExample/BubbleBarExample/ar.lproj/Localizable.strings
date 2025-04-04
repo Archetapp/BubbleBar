@@ -1,0 +1,19 @@
+/* Tab labels */
+"Home" = "الرئيسية";
+"Focus" = "تركيز";
+"Mail" = "البريد";
+"Eraser" = "ممحاة";
+"Grid" = "شبكة";
+
+/* Example content */
+"Hello World" = "مرحبا بالعالم";
+
+/* Accessibility labels */
+"Home tab" = "علامة تبويب الرئيسية";
+"Focus tab" = "علامة تبويب التركيز";
+"Mail tab" = "علامة تبويب البريد";
+"Eraser tab" = "علامة تبويب الممحاة";
+"Grid tab" = "علامة تبويب الشبكة";
+"Currently selected" = "محدد حاليا";
+"Double tap to switch to this tab" = "انقر نقرًا مزدوجًا للتبديل إلى علامة التبويب هذه";
+"Selected" = "محدد"; 

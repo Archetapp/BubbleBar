@@ -4,9 +4,14 @@ import SwiftUIX
 
 /// Represents a tab bar item's label and accessibility information
 public struct TabBarItemInfo {
-    let label: AnyView
-    let accessibilityLabel: String
-    let accessibilityHint: String
+    /// The visual representation of the tab item
+    public let label: AnyView
+    
+    /// The accessibility label used by VoiceOver
+    public let accessibilityLabel: String
+    
+    /// The accessibility hint used by VoiceOver
+    public let accessibilityHint: String
     
     public init(
         label: AnyView,
@@ -19,7 +24,8 @@ public struct TabBarItemInfo {
     }
 }
 
-struct TabBarLabelKey: _ViewTraitKey {
+// MARK: - Internal Implementation
+internal struct TabBarLabelKey: _ViewTraitKey {
     @inlinable
     static var defaultValue: TabBarItemInfo? {
         nil
@@ -27,7 +33,7 @@ struct TabBarLabelKey: _ViewTraitKey {
 }
 
 extension _ViewTraitKeys {
-    var tabBarLabel: TabBarLabelKey.Type {
+    internal var tabBarLabel: TabBarLabelKey.Type {
         TabBarLabelKey.self
     }
 }

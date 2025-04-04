@@ -1,0 +1,19 @@
+/* Tab labels */
+"Home" = "Home";
+"Focus" = "Focus";
+"Mail" = "Mail";
+"Eraser" = "Eraser";
+"Grid" = "Grid";
+
+/* Example content */
+"Hello World" = "Hello World";
+
+/* Accessibility labels */
+"Home tab" = "Home tab";
+"Focus tab" = "Focus tab";
+"Mail tab" = "Mail tab";
+"Eraser tab" = "Eraser tab";
+"Grid tab" = "Grid tab";
+"Currently selected" = "Currently selected";
+"Double tap to switch to this tab" = "Double tap to switch to this tab";
+"Selected" = "Selected"; 

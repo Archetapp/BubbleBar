@@ -3,6 +3,7 @@
 import SwiftUIX
 
 extension BubbleBar {
+    /// Internal implementation of the tab bar button
     internal struct _TabBarButton: View {
         @Environment(\.theme) private var theme
         @Environment(\.colorScheme) private var colorScheme
@@ -30,27 +31,27 @@ extension BubbleBar {
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
                         }
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility5)
                         .accessibility(label: Text(accessibilityLabel))
                     
                     if isSelected && showLabel {
                         label
                             .labelStyle(.titleOnly)
                             .font(.body.weight(.medium).leading(.loose))
-                            .minimumScaleFactor(0.8)
+                            .minimumScaleFactor(0.5)
                             .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
                             .foregroundColor(theme.resolveColors(for: colorScheme).selectedItemColor)
                             .if(!reduceMotion) { view in
                                 view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
                             }
-                            .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .leading)))
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility5)
+                            .transition(.opacity)
                     }
                 }
-                .frame(minWidth: 20, maxWidth: isSelected && configuration.equalItemSizing ? .infinity : nil)
-                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 12 : 8)
-                .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 12 : 8)
-                .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
+                .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
+                .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 8 : 6)
+                .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 10 : 8)
+                .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: true)
                 .background {
                     if isSelected {
                         ZStack {
@@ -74,36 +75,44 @@ extension BubbleBar {
             .accessibilityValue(isSelected ? "Selected" : "")
             .accessibilityAddTraits(isSelected ? [.isSelected, .isButton, .isTabBar] : [.isButton, .isTabBar])
             .accessibilityIdentifier("TabItem-\(index)")
-            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
+            .padding(dynamicTypeSize.isAccessibilitySize ? 4 : 2)
         }
         
+        /// Gets the accessibility label from the label view using reflection
         private var accessibilityLabel: String {
             let mirror = Mirror(reflecting: label)
             let title = mirror.children
                 .first { $0.label == "title" }?
                 .value as? String ?? "Tab"
-            return "\(title) tab"
+            return title
         }
         
+        /// Gets the appropriate accessibility hint based on selection state
         private var accessibilityHint: String {
-            isSelected ? "Currently selected" : "Double tap to switch to this tab"
+            isSelected ? 
+                NSLocalizedString("Currently selected", comment: "Accessibility hint for selected tab") : 
+                NSLocalizedString("Double tap to switch to this tab", comment: "Accessibility hint for unselected tab")
         }
     }
 }
 
+// MARK: - Utility Extensions
+
 extension Font {
-    var dynamic: Font {
+    /// Creates a font with loose leading for better readability
+    func dynamic() -> Font {
         self.leading(.loose)
-            .weight(.regular)
-            .uppercaseSmallCaps()
     }
 }
 
 extension View {
+    /// Converts a view to AnyView for type erasure
     func eraseToAnyView() -> AnyView {
         AnyView(self)
     }
     
+    /// Conditional view modifier that applies a transform only when the condition is true
     @ViewBuilder
     func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {

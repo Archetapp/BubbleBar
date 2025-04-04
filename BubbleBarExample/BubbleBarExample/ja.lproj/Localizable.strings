@@ -1,0 +1,19 @@
+/* Tab labels */
+"Home" = "ホーム";
+"Focus" = "フォーカス";
+"Mail" = "メール";
+"Eraser" = "消しゴム";
+"Grid" = "グリッド";
+
+/* Example content */
+"Hello World" = "こんにちは世界";
+
+/* Accessibility labels */
+"Home tab" = "ホームタブ";
+"Focus tab" = "フォーカスタブ";
+"Mail tab" = "メールタブ";
+"Eraser tab" = "消しゴムタブ";
+"Grid tab" = "グリッドタブ";
+"Currently selected" = "現在選択中";
+"Double tap to switch to this tab" = "ダブルタップしてこのタブに切り替える";
+"Selected" = "選択済み"; 
