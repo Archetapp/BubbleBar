@@ -327,7 +327,7 @@ BubbleBar is designed with accessibility as a priority, ensuring a great experie
 - ✅ **Dynamic Type**: UI scales appropriately with system font size
 - ✅ **Reduced Motion**: Animations adapt when Reduce Motion is enabled
 - ✅ **High Contrast**: Themes pass color contrast requirements
-- ✅ **RTL Support**: Layout adjusts for right-to-left languages
+- ✅ **RTL Support**: Layout correctly adapts when RTL direction is set
 - ✅ **Keyboard Navigation**: Full keyboard interaction support
 - ✅ **Localization**: Support for multiple languages
 
@@ -357,7 +357,7 @@ BubbleBar supports localization but doesn't include built-in translations - you'
 
 ### Features
 
-- **RTL Support**: Layout automatically adjusts for right-to-left languages
+- **RTL Support**: Layout properly adapts to right-to-left languages when RTL direction is set
 - **Example Localization**: The example app demonstrates English, Japanese, and Arabic
 - **Flexible Implementation**: Works with standard iOS localization patterns
 
@@ -372,10 +372,18 @@ BubbleBar supports localization but doesn't include built-in translations - you'
 }
 ```
 
-3. **Enable RTL support** automatically:
+3. **Set RTL support** when needed:
 ```swift
+// In SwiftUI apps, the system typically sets this automatically based on the user's language
+// For specific language switching or testing, set it explicitly:
 .environment(\.layoutDirection, Locale.current.languageDirection == .rightToLeft ? .rightToLeft : .leftToRight)
+
+// Example for direct language setting:
+ExampleGreen(language: .arabic)
+    .environment(\.layoutDirection, .rightToLeft)
 ```
+
+The system will automatically set the correct layout direction based on the user's language preferences. You only need to set it explicitly if you're implementing a language switcher or for testing purposes.
 
 Test your implementation with different locale settings to ensure correct display across languages.
 
