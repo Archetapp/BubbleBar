@@ -47,7 +47,6 @@ public struct ExampleGreen: View {
     /// - Parameter language: The language to use (default: .english)
     public init(language: Language = .english) {
         self.language = language
-        self.selectedTab = selectedTab
     }
     
     public var body: some View {
