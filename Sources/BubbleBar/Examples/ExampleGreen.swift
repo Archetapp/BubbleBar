@@ -105,7 +105,7 @@ public struct ExampleGreen: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility5)
+                        .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility5)
                 }
             }
             .padding()
