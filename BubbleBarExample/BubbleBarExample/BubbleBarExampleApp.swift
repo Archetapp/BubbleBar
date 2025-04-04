@@ -18,7 +18,6 @@ struct BubbleBarExampleApp: App {
     
     var body: some Scene {
         WindowGroup {
-            let _ = print(language)
             ExampleGreen(language: language)
                 .onAppear {
                     setupTestEnvironment()
