@@ -2,70 +2,132 @@
 
 import SwiftUI
 
-internal struct ExampleGreen: View {
-    @State private var selectedTab = 0
-    @Environment(\.theme) var theme
+/// Supported languages for the example app
+public enum Language {
+    /// English language
+    case english
     
-    var body: some View {
-        BubbleBarView(selectedTab: $selectedTab) {
-            view
-                .edgesIgnoringSafeArea(.all)
-                .tabBarItem {
-                    Label("Home Is where th", systemImage: "house.fill")
-                }
-            
-            view
-                .edgesIgnoringSafeArea(.all)
-                .tabBarItem {
-                    Label("Focus", systemImage: "timer")
-                }
-            view
-                .edgesIgnoringSafeArea(.all)
-                .tabBarItem {
-                    Label("Something Ama", systemImage: "mail.stack")
-                }
-            
-            view
-                .edgesIgnoringSafeArea(.all)
-                .tabBarItem {
-                    Label("Eraser", systemImage: "eraser")
-                }
-            
-            
-            view
-                .edgesIgnoringSafeArea(.all)
-                .tabBarItem {
-                    Label("Grid", systemImage: "grid")
-                }
+    /// Japanese language
+    case japanese
+    
+    /// Arabic language
+    case arabic
+    
+    /// Returns tab labels based on the selected language
+    var tabLabels: [String] {
+        switch self {
+        case .english:
+            return ["Home", "Focus", "Mail", "Eraser", "Grid"]
+        case .japanese:
+            return ["ホーム", "フォーカス", "メール", "消しゴム", "グリッド"]
+        case .arabic:
+            return ["الرئيسية", "تركيز", "البريد", "ممحاة", "شبكة"]
         }
-//        .bubbleBarStyle(
-//            .init(
-//                selectedItemColor: <#T##Color#>,
-//                unselectedItemColor: <#T##Color#>,
-//                bubbleBackgroundColor: <#T##Color#>,
-//                bubbleStrokeColor: <#T##Color#>,
-//                barBackgroundColor: <#T##Color#>,
-//                barStrokeColor: <#T##Color#>,
-//                barShadowColor: <#T##Color#>
-//            )
-//        )
-        .bubbleBarGlass()
     }
     
-    var view: some View {
-        ScrollView {
-            LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
-                ForEach(0 ..< 300) { i in
-                    Text("Hello World").bold()
-                }
-            }
-            .padding()
-            .edgesIgnoringSafeArea(.all)
+    /// Returns greeting text based on the selected language
+    var helloWorldText: String {
+        switch self {
+        case .english: return "Hello World"
+        case .japanese: return "こんにちは世界"
+        case .arabic: return "مرحبا بالعالم"
         }
-        .background(Color.blue.opacity(.random(in: 0.2 ... 0.6)))
     }
 }
 
+/// An example view that demonstrates BubbleBar with forest theme and localization support
+public struct ExampleGreen: View {
+    @State private var selectedTab = 0
+    @Environment(\.layoutDirection) private var layoutDirection
+    
+    /// The language setting for the example
+    private var language: Language
+    
+    /// Creates a new example with the specified language
+    /// - Parameter language: The language to use (default: .english)
+    public init(language: Language = .english) {
+        self.language = language
+    }
+    
+    public var body: some View {
+        ZStack(alignment: .bottomTrailing) {
+            BubbleBarView(selectedTab: $selectedTab) {
+                view
+                    .tabBarItem(
+                        label: { Label(language.tabLabels[0], systemImage: "house.fill") },
+                        accessibilityLabel: language.tabLabels[0]
+                    )
+                
+                view
+                    .tabBarItem(
+                        label: { Label(language.tabLabels[1], systemImage: "timer") },
+                        accessibilityLabel: language.tabLabels[1]
+                    )
+                
+                view
+                    .tabBarItem(
+                        label: { Label(language.tabLabels[2], systemImage: "mail.stack") },
+                        accessibilityLabel: language.tabLabels[2]
+                    )
+                
+                view
+                    .tabBarItem(
+                        label: { Label(language.tabLabels[3], systemImage: "eraser") },
+                        accessibilityLabel: language.tabLabels[3]
+                    )
+                
+                view
+                    .tabBarItem(
+                        label: { Label(language.tabLabels[4], systemImage: "grid") },
+                        accessibilityLabel: language.tabLabels[4]
+                    )
+            }
+            .bubbleBarStyle(.forest)
+        }
+    }
+    
+    /// Example content view for each tab
+    private var view: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
+                    ForEach(0 ..< 3) { i in
+                        NavigationLink {
+                            Color.green
+                        } label: {
+                            Text(language.helloWorldText)
+                        }
+                            .bold()
+                            .font(.body.dynamic())
+                            .foregroundColor(.primary)
+                            .padding(8)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
+                            .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility5)
+                    }
+                }
+                .padding()
+            }
+            .background(Color.red)
+        }
+        .navigationTitle(Text("Test"))
+    }
+}
+
+// MARK: - Preview
 #Preview {
-    ExampleGreen()
+//    ExampleGreen()
+//        .previewDisplayName("Light Mode")
+//    
+//    ExampleGreen()
+//        .preferredColorScheme(.dark)
+//        .previewDisplayName("Dark Mode")
+//    
+//    ExampleGreen(language: .arabic)
+//        .environment(\.layoutDirection, .rightToLeft)
+//        .previewDisplayName("RTL")
+//        
+    ExampleGreen(language: .japanese)
+        .previewDisplayName("Japanese")
 }

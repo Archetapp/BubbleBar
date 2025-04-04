@@ -22,11 +22,27 @@ public enum BubbleBar {}
 /// }
 /// .bubbleBarStyle(.dark)
 /// ```
+///
+/// The view automatically adds bottom padding to content to prevent it from being obscured by the tab bar.
+/// You can customize this padding using the `bubbleBarContentPadding(_:)` modifier:
+///
+/// ```swift
+/// BubbleBarView(selectedTab: $selectedTab) {
+///     // Your tab views here
+/// }
+/// .bubbleBarContentPadding(80) // Custom padding
+/// ```
 public struct BubbleBarView<Content: View>: View {
     @Environment(\.bubbleBarConfiguration) private var configuration
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.colorScheme) private var colorScheme
     @Namespace private var namespace
     @Binding var selectedTab: Int
     private let content: Content
+    @State private var tabBarHeight: CGFloat = 0
     
     /// Creates a new bubble bar view.
     /// - Parameters:
@@ -35,62 +51,128 @@ public struct BubbleBarView<Content: View>: View {
     public init(selectedTab: Binding<Int>, @ViewBuilder content: () -> Content) {
         self._selectedTab = selectedTab
         self.content = content()
+        
+        // Note: We don't need to initialize here since the environment configuration
+        // will be updated in the body when the view loads
     }
     
     public var body: some View {
-        ZStack(alignment: .bottom) {
+        // Check if high contrast mode is forced via launch arguments (useful for testing)
+        let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
+        
+        // Update accessibility settings immediately
+        let _ = configuration.updateForAccessibility(
+            dynamicTypeSize: dynamicTypeSize,
+            reduceMotion: reduceMotion,
+            reduceTransparency: reduceTransparency,
+            increasedContrast: colorSchemeContrast == .increased || forceHighContrast
+        )
+        
+        // Store the content padding value locally
+        let contentPadding = configuration.contentBottomPadding
+        
+        return ZStack(alignment: .bottom) {
             _VariadicViewAdapter(content) { content in
                 ZStack {
                     ForEach(content.children.indices, id: \.self) { index in
                         content.children[index]
                             .transition(configuration.viewTransition)
                             .opacity(index == selectedTab ? 1 : 0)
+                            .if(contentPadding > 0) { view in
+                                view.padding(.bottom, contentPadding)
+                            }
                     }
                 }
-                .animation(configuration.viewTransitionAnimation, value: selectedTab)
+                .animation(reduceMotion ? .default : configuration.viewTransitionAnimation, value: selectedTab)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             BubbleBar._TabBarContainer {
                 _VariadicViewAdapter(content) { content in
-                    HStack {
+                    HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 4 : 2) {
                         ForEach(content.children.indices, id: \.self) { index in
-                            if let label = content.children[index].traits.tabBarLabel {
+                            if let itemInfo = content.children[index].traits.tabBarLabel {
                                 BubbleBar._TabBarButton(
-                                    label: label,
+                                    label: itemInfo.label,
                                     isSelected: selectedTab == index,
                                     index: index,
                                     namespace: namespace,
                                     showLabel: configuration.showLabels,
                                     action: {
-                                        withAnimation(configuration.animation) {
+                                        withAnimation(reduceMotion ? .default : configuration.animation) {
                                             selectedTab = index
+                                            #if canImport(UIKit)
+                                            UIAccessibility.post(
+                                                notification: .screenChanged,
+                                                argument: "Switched to \(itemInfo.accessibilityLabel)"
+                                            )
+                                            #endif
                                         }
                                     }
                                 )
+                                .accessibilityLabel(itemInfo.accessibilityLabel)
+                                .accessibilityHint(itemInfo.accessibilityHint)
+                                
                                 if index != content.children.indices.last && !configuration.equalItemSizing {
-                                    Spacer()
+                                    Spacer(minLength: dynamicTypeSize.isAccessibilitySize ? 1 : 0)
                                 }
                             }
                         }
                     }
+                    .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .animation(configuration.animation, value: selectedTab)
+            .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
             .environment(\.theme, configuration.style.theme)
             .compositingGroup()
             .shadow(
-                color: configuration.style.theme.colors.barShadowColor,
+                color: configuration.style.theme.colors(for: colorScheme).barShadowColor,
                 radius: configuration.shadowRadius,
                 x: configuration.shadowOffset.x,
                 y: configuration.shadowOffset.y
             )
             .accessibilityElement(children: .contain)
-            .accessibilityLabel("Tab Bar")
+            .accessibilityLabel("Navigation")
+            .accessibilityHint("Tab bar for switching between different views")
+            .accessibilityIdentifier("BubbleBar")
+            .accessibilityAddTraits(.isTabBar)
             .offset(y: configuration.isVisible ? 0 : 100)
-            .animation(configuration.animation, value: configuration.isVisible)
+            .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
+            .onChange(of: dynamicTypeSize) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: reduceMotion) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: reduceTransparency) { _, _ in
+                updateAccessibilitySettings()
+            }
+            .onChange(of: colorSchemeContrast) { _, _ in
+                updateAccessibilitySettings()
+            }
         }
         .ignoresSafeArea(.keyboard)
+        .onPreferenceChange(TabBarSizePreferenceKey.self) { height in
+            if contentPadding > 0 {
+                Task { @MainActor in 
+                    self.tabBarHeight = height
+                }
+            }
+        }
+    }
+    
+    private func updateAccessibilitySettings() {
+        // Check if high contrast mode is forced via launch arguments (useful for testing)
+        let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
+        
+        // Apply the updated configuration
+        _ = configuration.updateForAccessibility(
+            dynamicTypeSize: dynamicTypeSize,
+            reduceMotion: reduceMotion,
+            reduceTransparency: reduceTransparency,
+            increasedContrast: colorSchemeContrast == .increased || forceHighContrast
+        )
     }
 }
 
@@ -101,7 +183,12 @@ public extension View {
     /// - Returns: A view with the modified bubble bar style
     func bubbleBarStyle(_ style: BubbleBar.Style) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.style = style
+            if config.increasedContrastEnabled {
+                config.originalStyle = style  // Store the new style as original
+            } else {
+                config.style = style  // Apply the style directly
+                config.originalStyle = style  // Store as original
+            }
         }
     }
     
@@ -217,6 +304,20 @@ public extension View {
     func bubbleBar(selectedTab: Binding<Int>) -> some View {
         BubbleBarView(selectedTab: selectedTab) {
             self
+        }
+    }
+    
+    /// Sets the bottom padding for content to avoid overlap with the bubble bar.
+    /// - Parameter padding: The amount of bottom padding to apply to content
+    /// - Returns: A view with the specified bottom padding to avoid the bubble bar
+    ///
+    /// By default, no extra padding is added (padding = 0). With padding = 0, 
+    /// the content will respect the system's safe area insets and the tab bar will 
+    /// appear within the safe area. To add explicit spacing between content and 
+    /// the tab bar, set this to a positive value.
+    func bubbleBarContentPadding(_ padding: CGFloat) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.contentBottomPadding = padding
         }
     }
 }

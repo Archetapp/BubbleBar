@@ -1,11 +1,12 @@
 // Created By Jared Davidson
 
-import SwiftUI
+import SwiftUIX
 
 extension BubbleBar {
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
         public var style: Style
+        internal var originalStyle: Style
         public var animation: Animation
         public var viewTransitionAnimation: Animation
         public var viewTransition: AnyTransition
@@ -14,6 +15,7 @@ extension BubbleBar {
         public var shape: AnyShape
         public var itemShape: AnyShape
         public var padding: EdgeInsets
+        public var bubbleBarItemPadding: EdgeInsets
         public var equalItemSizing: Bool
         
         // Shadow properties
@@ -27,6 +29,15 @@ extension BubbleBar {
         public var glassTint: Color
         public var isVisible: Bool
         
+        // Content spacing properties
+        public var contentBottomPadding: CGFloat
+        
+        // Accessibility properties
+        public var minimumTouchTargetSize: CGSize
+        public var accessibilitySpacing: EdgeInsets
+        public var useReducedMotion: Bool
+        public var increasedContrastEnabled: Bool
+        
         public init(
             style: Style = .forest,
             animation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
@@ -34,9 +45,10 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
-            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 25)),
-            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 20)),
-            padding: EdgeInsets = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16),
+            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
+            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
+            padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             shadowRadius: CGFloat = 1,
             shadowOffset: CGPoint = .zero,
@@ -44,9 +56,15 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
-            isVisible: Bool = true
+            isVisible: Bool = true,
+            contentBottomPadding: CGFloat = 0,
+            minimumTouchTargetSize: CGSize = CGSize(width: 44, height: 44),
+            accessibilitySpacing: EdgeInsets = EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24),
+            useReducedMotion: Bool = false,
+            increasedContrastEnabled: Bool = false
         ) {
-            self.style = style
+            self.style = increasedContrastEnabled ? .highContrast : style
+            self.originalStyle = style  // Store the original style
             self.animation = animation
             self.viewTransitionAnimation = viewTransitionAnimation
             self.viewTransition = viewTransition
@@ -55,6 +73,7 @@ extension BubbleBar {
             self.shape = shape
             self.itemShape = itemShape
             self.padding = padding
+            self.bubbleBarItemPadding = bubbleBarItemPadding
             self.equalItemSizing = equalItemSizing
             self.shadowRadius = shadowRadius
             self.shadowOffset = shadowOffset
@@ -63,6 +82,13 @@ extension BubbleBar {
             self.glassOpacity = glassOpacity
             self.glassTint = glassTint
             self.isVisible = isVisible
+            self.contentBottomPadding = contentBottomPadding
+            
+            // Initialize accessibility properties
+            self.minimumTouchTargetSize = minimumTouchTargetSize
+            self.accessibilitySpacing = accessibilitySpacing
+            self.useReducedMotion = useReducedMotion
+            self.increasedContrastEnabled = increasedContrastEnabled
         }
         
         /// Convenience initializer for direct color customization
@@ -78,9 +104,10 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
-            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 25)),
-            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 20)),
-            padding: EdgeInsets = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16),
+            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
+            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
+            padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             shadowRadius: CGFloat = 8,
             shadowOffset: CGPoint = .zero,
@@ -88,7 +115,8 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
-            isVisible: Bool = true
+            isVisible: Bool = true,
+            contentBottomPadding: CGFloat = 0
         ) {
             // Create a custom style with the provided colors
             let customStyle = Style(
@@ -111,6 +139,7 @@ extension BubbleBar {
                 shape: shape,
                 itemShape: itemShape,
                 padding: padding,
+                bubbleBarItemPadding: bubbleBarItemPadding,
                 equalItemSizing: equalItemSizing,
                 shadowRadius: shadowRadius,
                 shadowOffset: shadowOffset,
@@ -118,8 +147,87 @@ extension BubbleBar {
                 glassBlurRadius: glassBlurRadius,
                 glassOpacity: glassOpacity,
                 glassTint: glassTint,
-                isVisible: isVisible
+                isVisible: isVisible,
+                contentBottomPadding: contentBottomPadding
             )
+        }
+        
+        /// Updates the configuration based on the current accessibility settings
+        public func updateForAccessibility(
+            dynamicTypeSize: DynamicTypeSize,
+            reduceMotion: Bool,
+            reduceTransparency: Bool,
+            increasedContrast: Bool
+        ) -> BubbleBar.Configuration {
+            // Store the state
+            self.useReducedMotion = reduceMotion
+            self.increasedContrastEnabled = increasedContrast
+            
+            // Apply size adjustments for accessibility
+            if dynamicTypeSize.isAccessibilitySize {
+                // Limit the size to prevent overflow
+                let height: CGFloat = max(54, min(64, 64))
+                if let currentSize = self.size {
+                    self.size = CGSize(width: currentSize.width, height: height)
+                }
+                
+                // Adjust padding
+                self.padding = EdgeInsets(
+                    top: self.padding.top,
+                    leading: max(6, self.padding.leading),
+                    bottom: self.padding.bottom,
+                    trailing: max(6, self.padding.trailing)
+                )
+                
+                // Adjust item padding for accessibility
+                self.bubbleBarItemPadding = EdgeInsets(
+                    top: max(10, self.bubbleBarItemPadding.top),
+                    leading: max(8, self.bubbleBarItemPadding.leading),
+                    bottom: max(10, self.bubbleBarItemPadding.bottom),
+                    trailing: max(8, self.bubbleBarItemPadding.trailing)
+                )
+            }
+            
+            // Apply high contrast if needed - first check system setting, then parameter
+            #if canImport(UIKit)
+            let isSystemHighContrastEnabled = UIAccessibility.isDarkerSystemColorsEnabled
+            #else
+            let isSystemHighContrastEnabled = false
+            #endif
+            
+            let shouldUseHighContrast = isSystemHighContrastEnabled || increasedContrast
+            
+            if shouldUseHighContrast {
+                self.style = .highContrast
+            } else if self.originalStyle != nil {
+                self.style = self.originalStyle
+            }
+            
+            // Simplify animations for reduced motion
+            if reduceMotion {
+                self.animation = .default
+                self.viewTransitionAnimation = .default
+                self.viewTransition = .opacity
+            }
+            
+            // Disable glass effect for reduced transparency
+            if reduceTransparency {
+                self.isGlass = false
+                
+                // Also ensure sufficient contrast
+                let newStyle = Style.copying(self.style) { colors in
+                    var colors = colors
+                    // Get the current bubble background opacity
+                    let bubbleColorOpacity: Double = 0.9
+                    
+                    // Ensure solid backgrounds by setting explicit opacity
+                    colors.bubbleBackgroundColor = colors.bubbleBackgroundColor.opacity(bubbleColorOpacity)
+                    return colors
+                }
+                self.style = newStyle
+            }
+            
+            return self
         }
     }
 }

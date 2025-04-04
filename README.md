@@ -15,9 +15,11 @@ A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar
   - [Creating Custom Styles](#creating-custom-styles)
 - [Advanced Customization](#advanced-customization)
   - [Animation Control](#animation-control)
+  - [Content Padding](#content-padding)
   - [Shape Customization](#shape-customization)
   - [Sizing Options](#sizing-options)
 - [Accessibility](#accessibility)
+- [Localization and Multi-Language Support](#localization-and-multi-language-support)
 - [Requirements](#requirements)
 - [License](#license)
 
@@ -25,14 +27,36 @@ A modern, customizable SwiftUI tab bar with a bubble effect animation. BubbleBar
 
 ## Features
 
-- 🎨 Multiple built-in themes (Dark, Desert, Forest, Night Owl, High Contrast, Ocean)
-- ✨ Smooth bubble animation between tabs
-- 🎯 Customizable container and item shapes
-- 📐 Flexible sizing options (fixed or edge-to-edge)
-- 🔤 Optional label display for selected tabs
-- 🎭 Customizable shadows and effects
-- 🎬 Independent animations for tab bar and view transitions
-- 📱 iOS 16+ and macOS 14+ support
+- **Themes & Styles**
+  - 🎨 Multiple built-in themes (Dark, Desert, Forest, Night Owl, High Contrast, Ocean)
+  - 🎭 Customizable shadows and effects
+  - 🌟 Glass effect option for modern UI
+  
+- **Animations & Interactions**
+  - ✨ Smooth bubble animation between tabs
+  - 🎬 Independent animations for tab bar and view transitions
+  - 🔄 Configurable transition effects
+  
+- **Customization**
+  - 🎯 Customizable container and item shapes
+  - 📐 Flexible sizing options (fixed or edge-to-edge)
+  - 🔤 Optional label display for selected tabs
+  
+- **Accessibility**
+  - 🔍 VoiceOver and screen reader support
+  - 📱 Dynamic Type compatibility
+  - 🚫 Reduced Motion support
+  - 🌗 High Contrast mode
+  - ⌨️ Keyboard navigation
+  
+- **Localization**
+  - 🌐 Multiple language support
+  - 🔄 Right-to-Left (RTL) layout support
+  - 🔠 Proper text handling for all languages
+
+- **Platforms**
+  - 📱 iOS 16+ support
+  - 💻 macOS 14+ support
 
 ---
 
@@ -253,6 +277,32 @@ You can combine transitions for more complex effects:
   </div>
 </div>
 
+### Content Padding
+
+BubbleBar offers control over how content is padded to avoid overlapping with the tab bar:
+
+- By default (with `bubbleBarContentPadding(0)`), content respects the system's safe area insets
+- For custom spacing, use the `bubbleBarContentPadding(_:)` modifier with a positive value
+
+```swift
+BubbleBarView(selectedTab: $selectedTab) {
+    // Your tab content here
+}
+.bubbleBarContentPadding(0)  // Default - respects system safe areas
+```
+
+```swift
+BubbleBarView(selectedTab: $selectedTab) {
+    // Your tab content here
+}
+.bubbleBarContentPadding(20)  // Custom padding - adds 20pt of space above the tab bar
+```
+
+This is especially useful when:
+- You need precise control over the spacing between content and the tab bar
+- Your content needs more or less clearance than the default safe area provides
+- You're implementing a custom layout where the tab bar overlays part of the content
+
 ### Shape Customization
 
 BubbleBar allows you to customize both the container and item shapes:
@@ -287,8 +337,82 @@ NOTE: Padding is defaulted to 4 between inner items and outer shape. (Might make
 
 ## Accessibility
 
-BubbleBar includes some accessibility support (Could be better I think)
-I just need to deep dive into accessibility to really know.
+BubbleBar is designed with accessibility as a priority, ensuring a great experience for all users.
+
+### Key Accessibility Features
+
+- **VoiceOver Support**: Proper accessibility labels, hints, and traits
+- **Dynamic Type**: Full support for all text sizes
+- **Reduced Motion**: Simplified animations when Reduce Motion is enabled
+- **High Contrast**: Accessible color themes with adequate contrast
+- **Keyboard Navigation**: Complete keyboard focus and selection support
+- **RTL Languages**: Right-to-left language support
+
+### Accessibility Checklist
+
+- ✅ **VoiceOver**: Tab items have proper labels, hints, and traits
+- ✅ **Dynamic Type**: UI scales appropriately with system font size
+- ✅ **Reduced Motion**: Animations adapt when Reduce Motion is enabled
+- ✅ **High Contrast**: Themes pass color contrast requirements
+- ✅ **RTL Support**: Layout correctly adapts when RTL direction is set
+- ✅ **Keyboard Navigation**: Full keyboard interaction support
+- ✅ **Localization**: Support for multiple languages
+
+### Implementation Guide
+
+When implementing BubbleBar in your app:
+
+1. **Provide clear accessibility labels**:
+```swift
+.tabBarItem(
+    label: { Label("Home", systemImage: "house.fill") },
+    accessibilityLabel: "Home"
+)
+```
+
+2. **Test with assistive technologies** enabled:
+   - VoiceOver
+   - Dynamic Type (various sizes)
+   - Reduce Motion
+   - High Contrast
+
+Our automated test suite verifies all accessibility features across different configurations including light/dark modes and various assistive technology settings.
+
+## Localization and Multi-Language Support
+
+BubbleBar supports localization but doesn't include built-in translations - you'll need to provide your own localized strings.
+
+### Features
+
+- **RTL Support**: Layout properly adapts to right-to-left languages when RTL direction is set
+- **Example Localization**: The example app demonstrates English, Japanese, and Arabic
+- **Flexible Implementation**: Works with standard iOS localization patterns
+
+### Implementation Guide
+
+1. **Create localization files** for each supported language
+
+2. **Use localization keys** for tab labels:
+```swift
+.tabBarItem {
+    Label(NSLocalizedString("Home", comment: "Home tab"), systemImage: "house.fill")
+}
+```
+
+3. **Set RTL support** when needed:
+```swift
+// In SwiftUI apps, the system typically sets this automatically based on the user's language
+// For specific language switching or testing, set it explicitly:
+.environment(\.layoutDirection, Locale.current.languageDirection == .rightToLeft ? .rightToLeft : .leftToRight)
+
+// Example for direct language setting:
+ExampleGreen(language: .arabic)
+    .environment(\.layoutDirection, .rightToLeft)
+```
+
+The system will automatically set the correct layout direction based on the user's language preferences. You only need to set it explicitly if you're implementing a language switcher or for testing purposes.
+
+Test your implementation with different locale settings to ensure correct display across languages.
 
 ## Requirements
 

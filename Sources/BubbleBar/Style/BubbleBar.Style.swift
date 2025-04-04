@@ -54,103 +54,141 @@ extension BubbleBar {
             _ style: Style,
             modifyColors: (Theme.Colors) -> Theme.Colors
         ) -> Style {
-            let newColors = modifyColors(style.theme.colors)
+            let newColors = modifyColors(style.theme.colors(for: .light))  // Default to light scheme for modification
             return Style(theme: Theme(colors: newColors))
+        }
+        
+        /// Creates a new style that adapts to the current color scheme.
+        /// - Parameter styleProvider: A closure that takes a ColorScheme and returns a Style
+        public init(_ styleProvider: @escaping @Sendable (ColorScheme) -> Style) {
+            self.theme = Theme { colorScheme in
+                styleProvider(colorScheme).theme.resolveColors(for: colorScheme)
+            }
         }
         
         /// A dark theme with blue accents, suitable for dark mode interfaces.
         public static var dark: Style {
             Style(
-                selectedItemColor: .blue,
+                selectedItemColor: Color.blue,
                 unselectedItemColor: Color(.secondarySystemFill),
-                bubbleBackgroundColor: .blue.opacity(0.15),
-                bubbleStrokeColor: .blue.opacity(0.4),
+                bubbleBackgroundColor: Color.blue.opacity(0.15),
+                bubbleStrokeColor: Color.blue.opacity(0.4),
                 barBackgroundColor: Color(red: 0.1, green: 0.1, blue: 0.15),
-                barStrokeColor: .blue.opacity(0.2),
-                barShadowColor: .black
+                barStrokeColor: Color.blue.opacity(0.2),
+                barShadowColor: Color.black
             )
         }
         
         /// A warm desert theme with orange and beige tones.
         public static var desert: Style {
-            let primary = Color(red: 0.8, green: 0.4, blue: 0.2)
-            return Style(
-                selectedItemColor: primary,
-                unselectedItemColor: Color(red: 0.5, green: 0.4, blue: 0.3),
-                bubbleBackgroundColor: primary.opacity(0.15),
-                bubbleStrokeColor: primary.opacity(0.4),
-                barBackgroundColor: Color(red: 0.95, green: 0.9, blue: 0.85),
-                barStrokeColor: primary.opacity(0.2),
-                barShadowColor: primary
-            )
+            Style { colorScheme in
+                let primary = Color(red: 0.8, green: 0.4, blue: 0.2)
+                let isDark = colorScheme == .dark
+                
+                return Style(
+                    selectedItemColor: primary,
+                    unselectedItemColor: isDark ? Color.white.opacity(0.6) : Color(red: 0.5, green: 0.4, blue: 0.3),
+                    bubbleBackgroundColor: primary.opacity(0.15),
+                    bubbleStrokeColor: primary.opacity(0.4),
+                    barBackgroundColor: isDark ? Color(red: 0.2, green: 0.15, blue: 0.1) : Color(red: 0.95, green: 0.9, blue: 0.85),
+                    barStrokeColor: primary.opacity(0.2),
+                    barShadowColor: primary
+                )
+            }
         }
         
         /// A natural forest theme with green tones.
         public static var forest: Style {
-            let primary = Color(red: 0.2, green: 0.6, blue: 0.3)
-            return Style(
-                selectedItemColor: primary,
-                unselectedItemColor: Color(red: 0.4, green: 0.5, blue: 0.4),
-                bubbleBackgroundColor: primary.opacity(0.15),
-                bubbleStrokeColor: primary.opacity(0.4),
-                barBackgroundColor: Color(red: 0.9, green: 0.95, blue: 0.9),
-                barStrokeColor: primary.opacity(0.2),
-                barShadowColor: primary
-            )
+            Style { colorScheme in
+                let primary = Color(red: 0.2, green: 0.6, blue: 0.3)
+                let isDark = colorScheme == .dark
+                
+                return Style(
+                    selectedItemColor: primary,
+                    unselectedItemColor: isDark ? Color.white.opacity(0.6) : Color(red: 0.4, green: 0.5, blue: 0.4),
+                    bubbleBackgroundColor: primary.opacity(0.15),
+                    bubbleStrokeColor: primary.opacity(0.4),
+                    barBackgroundColor: isDark ? Color(red: 0.1, green: 0.15, blue: 0.1) : Color(red: 0.9, green: 0.95, blue: 0.9),
+                    barStrokeColor: primary.opacity(0.2),
+                    barShadowColor: primary
+                )
+            }
         }
         
         /// A dark blue theme optimized for night-time use.
         public static var nightOwl: Style {
-            let primary = Color(red: 0.2, green: 0.4, blue: 0.8)
-            return Style(
-                selectedItemColor: primary,
-                unselectedItemColor: Color(red: 0.7, green: 0.7, blue: 0.8),
-                bubbleBackgroundColor: primary.opacity(0.15),
-                bubbleStrokeColor: primary.opacity(0.4),
-                barBackgroundColor: Color(red: 0.2, green: 0.2, blue: 0.25),
-                barStrokeColor: primary.opacity(0.2),
-                barShadowColor: .black
-            )
+            Style { colorScheme in
+                let primary = Color(red: 0.2, green: 0.4, blue: 0.8)
+                let isDark = colorScheme == .dark
+                
+                return Style(
+                    selectedItemColor: primary,
+                    unselectedItemColor: isDark ? Color.white.opacity(0.6) : Color(red: 0.7, green: 0.7, blue: 0.8),
+                    bubbleBackgroundColor: primary.opacity(0.15),
+                    bubbleStrokeColor: primary.opacity(0.4),
+                    barBackgroundColor: isDark ? Color(red: 0.1, green: 0.1, blue: 0.15) : Color(red: 0.95, green: 0.95, blue: 1.0),
+                    barStrokeColor: primary.opacity(0.2),
+                    barShadowColor: Color.black
+                )
+            }
         }
         
         /// A high contrast theme optimized for accessibility.
         public static var highContrast: Style {
-            return Style(
-                selectedItemColor: .black,
-                unselectedItemColor: Color(red: 0.4, green: 0.4, blue: 0.4),
-                bubbleBackgroundColor: .black.opacity(0.15),
-                bubbleStrokeColor: .black.opacity(0.4),
-                barBackgroundColor: .white,
-                barStrokeColor: .black.opacity(0.2),
-                barShadowColor: .clear
-            )
+            Style { colorScheme in
+                let isDark = colorScheme == .dark
+                
+                // Use pure black and white for maximum contrast
+                let foreground = isDark ? Color.white : Color.black
+                let background = isDark ? Color.black : Color.white
+                
+                return Style(
+                    // Use full opacity for text elements to ensure maximum contrast
+                    selectedItemColor: foreground,
+                    unselectedItemColor: foreground.opacity(0.7),
+                    // Use a visible bubble background with strong contrast
+                    bubbleBackgroundColor: (isDark ? Color.white.opacity(0.2) : Color.black.opacity(0.1)),
+                    bubbleStrokeColor: foreground,
+                    barBackgroundColor: background,
+                    barStrokeColor: foreground,
+                    barShadowColor: Color.clear
+                )
+            }
         }
         
         /// A cool ocean theme with blue tones.
         public static var ocean: Style {
-            let primary = Color(red: 0.0, green: 0.5, blue: 0.8)
-            return Style(
-                selectedItemColor: primary,
-                unselectedItemColor: Color(red: 0.3, green: 0.4, blue: 0.5),
-                bubbleBackgroundColor: primary.opacity(0.15),
-                bubbleStrokeColor: primary.opacity(0.4),
-                barBackgroundColor: .white,
-                barStrokeColor: primary.opacity(0.2),
-                barShadowColor: primary
-            )
+            Style { colorScheme in
+                let primary = Color(red: 0.0, green: 0.5, blue: 0.8)
+                let isDark = colorScheme == .dark
+                
+                return Style(
+                    selectedItemColor: primary,
+                    unselectedItemColor: isDark ? Color.white.opacity(0.6) : Color(red: 0.3, green: 0.4, blue: 0.5),
+                    bubbleBackgroundColor: primary.opacity(0.15),
+                    bubbleStrokeColor: primary.opacity(0.4),
+                    barBackgroundColor: isDark ? Color(red: 0.1, green: 0.15, blue: 0.2) : Color.white,
+                    barStrokeColor: primary.opacity(0.2),
+                    barShadowColor: primary
+                )
+            }
         }
         
         /// A modern glass morphism theme with blur effects and transparency.
         public static var glass: Style {
-            return Style(
-                selectedItemColor: .white,
-                unselectedItemColor: .white.opacity(0.7),
-                bubbleBackgroundColor: .white.opacity(0.15),
-                bubbleStrokeColor: .white.opacity(0.4),
-                barBackgroundColor: .white.opacity(0.2),
-                barStrokeColor: .white.opacity(0.2),
-                barShadowColor: .black
-            )
+            Style { colorScheme in
+                let isDark = colorScheme == .dark
+                
+                return Style(
+                    selectedItemColor: isDark ? Color.white : Color.black,
+                    unselectedItemColor: isDark ? Color.white.opacity(0.7) : Color.black.opacity(0.7),
+                    bubbleBackgroundColor: (isDark ? Color.white : Color.black).opacity(0.15),
+                    bubbleStrokeColor: (isDark ? Color.white : Color.black).opacity(0.4),
+                    barBackgroundColor: (isDark ? Color.white : Color.black).opacity(0.2),
+                    barStrokeColor: (isDark ? Color.white : Color.black).opacity(0.2),
+                    barShadowColor: isDark ? Color.black : Color.black.opacity(0.3)
+                )
+            }
         }
     }
 } 

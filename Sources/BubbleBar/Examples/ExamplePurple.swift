@@ -23,7 +23,7 @@ struct ExamplePurple: View {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
         }
-        .bubbleBarStyle(.highContrast)
+        .bubbleBarStyle(.nightOwl)
     }
 }
 
