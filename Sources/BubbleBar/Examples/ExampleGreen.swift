@@ -88,23 +88,30 @@ public struct ExampleGreen: View {
     
     /// Example content view for each tab
     private var view: some View {
-        ScrollView {
-            LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
-                ForEach(0 ..< 100) { i in
-                    Text(language.helloWorldText)
-                        .bold()
-                        .font(.body.dynamic())
-                        .foregroundColor(.primary)
-                        .padding(8)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
-                        .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility5)
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
+                    ForEach(0 ..< 100) { i in
+                        NavigationLink {
+                            Color.green
+                        } label: {
+                            Text(language.helloWorldText)
+                        }
+                            .bold()
+                            .font(.body.dynamic())
+                            .foregroundColor(.primary)
+                            .padding(8)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemBackground)))
+                            .dynamicTypeSize(DynamicTypeSize.xSmall...DynamicTypeSize.accessibility5)
+                    }
                 }
+                .padding()
             }
-            .padding()
+            .background(Color.red)
         }
-        .background(Color.black)
+        .navigationTitle(Text("Test"))
     }
 }
 
