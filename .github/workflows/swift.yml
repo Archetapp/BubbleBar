@@ -25,15 +25,15 @@ jobs:
         
     - name: Validate Example Files
       run: |
-        # Use Swift's type checker to validate example files compile
+        # Use SwiftC's type checker to validate example files compile
         echo "Validating example files in Sources/BubbleBar/Examples directory..."
-        find Sources/BubbleBar/Examples -name "*.swift" -print -exec swift -typecheck {} \;
+        find Sources/BubbleBar/Examples -name "*.swift" -print -exec swiftc -typecheck {} \;
         
         # Verify there are no syntax errors in the example files
         cd Sources/BubbleBar/Examples
         for file in *.swift; do
           echo "Checking $file"
-          swift -swift-version 5 -typecheck "$file"
+          swiftc -swift-version 5 -typecheck "$file"
           if [ $? -ne 0 ]; then
             echo "Error: Failed to compile $file"
             exit 1
