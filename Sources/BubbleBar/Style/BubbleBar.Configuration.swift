@@ -12,6 +12,7 @@ extension BubbleBar {
         public var viewTransition: AnyTransition
         public var showLabels: Bool
         public var size: CGSize?
+        public var adaptiveItemsWidth: Bool
         public var shape: AnyShape
         public var itemShape: AnyShape
         public var padding: EdgeInsets
@@ -45,6 +46,7 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
+            adaptiveItemsWidth: Bool = false,
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
             itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
@@ -70,6 +72,7 @@ extension BubbleBar {
             self.viewTransition = viewTransition
             self.showLabels = showLabels
             self.size = size
+            self.adaptiveItemsWidth = adaptiveItemsWidth
             self.shape = shape
             self.itemShape = itemShape
             self.padding = padding
@@ -104,6 +107,7 @@ extension BubbleBar {
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
             size: CGSize? = nil,
+            adaptiveItemsWidth: Bool = false,
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
             itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
@@ -136,6 +140,7 @@ extension BubbleBar {
                 viewTransition: viewTransition,
                 showLabels: showLabels,
                 size: size,
+                adaptiveItemsWidth: adaptiveItemsWidth,
                 shape: shape,
                 itemShape: itemShape,
                 padding: padding,

@@ -115,6 +115,7 @@ BubbleBarView(selectedTab: $selectedTab) {
 .bubbleBarViewTransition(.easeInOut)       // Custom animation for view transitions
 .showBubbleBarLabels(true)                 // Show/hide labels
 .bubbleBarSize(CGSize(width: 350, height: 60))  // Optional fixed size
+.bubbleBarAdaptiveItemsWidth(false)        // adaptively adjust the bubble bar width of the bubble bar items's width
 .bubbleBarShape(RoundedRectangle(cornerRadius: 20))  // Container shape
 .bubbleBarItemShape(Capsule())             // Selected item shape
 .bubbleBarItemEqualSizing(true)            // Equal width items
