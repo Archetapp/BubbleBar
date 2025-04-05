@@ -1,7 +1,7 @@
-# This workflow will build a Swift project and run UI tests
+# This workflow will run UI tests for BubbleBar
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
-name: Swift
+name: UI Tests
 
 on:
   push:
@@ -10,42 +10,29 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Swift
+    - name: Setup Xcode
       run: |
-        # Check Swift version
+        # Show Xcode version
+        xcodebuild -version
+        # Show Swift version
         swift --version
         
-    - name: Update Swift Tools Version if Needed
+    - name: Run UI Tests
       run: |
-        # If we can't use Swift 6.0, modify the Package.swift to use 5.10
-        SWIFT_VERSION=$(swift --version | head -1 | sed -E 's/.*Swift version ([0-9]+\.[0-9]+).*/\1/')
-        echo "Current Swift version: $SWIFT_VERSION"
-        
-        if [[ "$SWIFT_VERSION" != "6.0" ]]; then
-          echo "Adjusting Package.swift to use Swift $SWIFT_VERSION"
-          sed -i '' "s/swift-tools-version: 6.0/swift-tools-version: $SWIFT_VERSION/" Package.swift
-          cat Package.swift | head -1
-        fi
-    
-    - name: Build Package
-      run: swift build -v
-      
-    - name: Build and Run UI Tests
-      run: |
-        # List available destinations
+        # List available simulators
         xcrun simctl list devices available
         
         # Build and test the UI test target for BubbleBarExample
         cd BubbleBarExample
         
-        # First, try to list available schemes
+        # List available schemes in the workspace
         xcodebuild -workspace BubbleBar.xcworkspace -list
         
-        # Run the tests
+        # Run the UI tests
         xcodebuild test -workspace BubbleBar.xcworkspace -scheme BubbleBarExample -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -only-testing:BubbleBarExampleUITests
