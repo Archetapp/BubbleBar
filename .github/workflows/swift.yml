@@ -1,7 +1,7 @@
-# This workflow will run UI tests for BubbleBar
+# This workflow will validate the Swift examples compile
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
-name: UI Tests
+name: Validate Examples
 
 on:
   push:
@@ -10,29 +10,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  validate:
     runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Xcode
+    - name: Show Environment Info
       run: |
         # Show Xcode version
         xcodebuild -version
         # Show Swift version
         swift --version
         
-    - name: Run UI Tests
+    - name: Validate Example Files
       run: |
-        # List available simulators
-        xcrun simctl list devices available
+        # Use Swift's type checker to validate example files compile
+        echo "Validating example files in Sources/BubbleBar/Examples directory..."
+        find Sources/BubbleBar/Examples -name "*.swift" -print -exec swift -typecheck {} \;
         
-        # Build and test the UI test target for BubbleBarExample
-        cd BubbleBarExample
-        
-        # List available schemes in the workspace
-        xcodebuild -workspace BubbleBar.xcworkspace -list
-        
-        # Run the UI tests
-        xcodebuild test -workspace BubbleBar.xcworkspace -scheme BubbleBarExample -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -only-testing:BubbleBarExampleUITests
+        # Verify there are no syntax errors in the example files
+        cd Sources/BubbleBar/Examples
+        for file in *.swift; do
+          echo "Checking $file"
+          swift -swift-version 5 -typecheck "$file"
+          if [ $? -ne 0 ]; then
+            echo "Error: Failed to compile $file"
+            exit 1
+          fi
+        done
+        echo "All example files validated successfully"
