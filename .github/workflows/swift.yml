@@ -131,12 +131,16 @@ jobs:
         # Initialize package
         swift package init --type executable
         
+        # Check directory structure
+        ls -la
+        ls -la Sources/
+        
         # Add BubbleBar as dependency
         sed -i '' 's/dependencies: \[\]/dependencies: [.package(path: "..\/")]/' Package.swift
         sed -i '' 's/targets: \[/targets: [/' Package.swift
         sed -i '' 's/dependencies: \[\]),/dependencies: [.product(name: "BubbleBar", package: "BubbleBar")]),/' Package.swift
         
-        # Update main.swift to use BubbleBar
+        # Update main.swift to use BubbleBar - using the correct path
         cat > Sources/TestPackage/main.swift << 'EOT'
         import SwiftUI
         import BubbleBar
