@@ -28,7 +28,7 @@ extension BubbleBar {
                     maxHeight: configuration.size?.height ?? 64,
                     alignment: .center
                 )
-                .fixedSize(horizontal: false, vertical: true)
+                .fixedSize(horizontal: configuration.adaptiveItemsWidth && configuration.size == nil, vertical: true)
                 .background {
                     if configuration.isGlass {
                         glassBackground

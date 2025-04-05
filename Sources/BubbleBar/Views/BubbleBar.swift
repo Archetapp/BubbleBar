@@ -218,6 +218,15 @@ public extension View {
             config.size = size
         }
     }
+
+    /// adaptively adjust the bubble bar width of the bubble bar items's width
+    /// - Parameter enabled: Whether to enable equal width for all items's total width
+    /// - Returns: A view with the modified bubble bar item width
+    func bubbleBarAdaptiveItemsWidth(_ enabled: Bool) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.adaptiveItemsWidth = enabled
+        }
+    }
     
     /// Sets the shape of the bubble bar container.
     /// - Parameter shape: The shape to apply to the container
