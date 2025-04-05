@@ -140,8 +140,8 @@ jobs:
         sed -i '' 's/targets: \[/targets: [/' Package.swift
         sed -i '' 's/dependencies: \[\]),/dependencies: [.product(name: "BubbleBar", package: "BubbleBar")]),/' Package.swift
         
-        # Update main.swift to use BubbleBar - using the correct path
-        cat > Sources/TestPackage/main.swift << 'EOT'
+        # Update main.swift with BubbleBar code - using the correct path
+        cat > Sources/main.swift << 'EOT'
         import SwiftUI
         import BubbleBar
 
