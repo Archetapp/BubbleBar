@@ -1,4 +1,5 @@
 # BubbleBar
+[![Build Package](https://github.com/Archetapp/BubbleBar/actions/workflows/swift.yml/badge.svg)](https://github.com/Archetapp/BubbleBar/actions/workflows/swift.yml)
 
 <img src="https://github.com/user-attachments/assets/57228e48-9d6b-4d4d-84d7-33c9371f16df" width="100%">
 
