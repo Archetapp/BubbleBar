@@ -1,4 +1,4 @@
-# This workflow will build a Swift project
+# This workflow will build a Swift project and run UI tests
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
 name: Swift
@@ -11,12 +11,14 @@ on:
 
 jobs:
   build:
-
     runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
+    - name: Build Package
       run: swift build -v
-    - name: Run tests
-      run: swift test -v
+    - name: Build and Run UI Tests
+      run: |
+        # Build and test the UI test target for BubbleBarExample
+        cd BubbleBarExample
+        xcodebuild test -workspace BubbleBar.xcworkspace -scheme BubbleBarExample -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -only-testing:BubbleBarExampleUITests
