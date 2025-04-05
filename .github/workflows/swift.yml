@@ -180,3 +180,42 @@ jobs:
         echo ""
         echo "These accessibility tests would be executed on a simulator or device."
         echo "For full UI testing integration, a separate CI/CD workflow with Xcode Cloud or fastlane could be set up."
+        
+  # This job is commented out as it requires a self-hosted runner
+  # Uncomment and configure when a self-hosted runner is available
+  run-ui-tests:
+    name: Run UI Tests
+    runs-on: self-hosted  # Requires a self-hosted runner with proper Xcode setup
+    needs: check
+    if: false  # Disabled by default - set to true when self-hosted runner is configured
+    timeout-minutes: 30
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      
+    - name: List Available Simulators
+      run: xcrun simctl list devices available
+      
+    - name: Run UI Tests
+      run: |
+        # Navigate to the example project directory
+        cd BubbleBarExample
+        
+        # Run the UI tests for the BubbleBarExample scheme
+        xcodebuild test \
+          -workspace BubbleBar.xcworkspace \
+          -scheme BubbleBarExample \
+          -testPlan BubbleBarExampleUITests \
+          -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.4' \
+          -only-testing:BubbleBarExampleUITests/BubbleBarAccessibilityTests
+        
+    - name: Test Results Summary
+      if: always()
+      run: |
+        echo "UI Test Results:"
+        echo "--------------------"
+        if [ $? -eq 0 ]; then
+          echo "✅ All UI tests passed"
+        else
+          echo "⚠️ Some UI tests failed - see logs for details"
+        fi
