@@ -104,45 +104,23 @@ jobs:
     - name: List Simulators
       run: xcrun simctl list devices available
     
-    - name: Setup UI Test Environment
+    - name: Check Examples Directory
       run: |
-        cd BubbleBarExample
-        
-        # Check if Xcode project exists
-        if [ -d "BubbleBarExample.xcodeproj" ]; then
-          echo "Xcode project found, checking version compatibility..."
-          
-          # Create test script to check if UI tests can run
-          cat > run_tests.sh << 'EOF'
-          #!/bin/bash
-          set -e
-          
-          # Run a simple test to validate accessibility of core examples
-          swift -version
-          
-          # Check if Example files exist and are valid
-          cd ..
-          echo "Validating example files..."
+        # Directly validate example files without heredoc 
+        echo "Validating example files..."
+        if [ -d "Sources/BubbleBar/Examples" ]; then
           find Sources/BubbleBar/Examples -name "*.swift" -print
-          
-          # Report success
-          echo "✅ UI test environment verified"
-          EOF
-          
-          chmod +x run_tests.sh
-          ./run_tests.sh
+          echo "✅ Examples directory verified"
+          echo "Found $(find Sources/BubbleBar/Examples -name "*.swift" | wc -l) example files"
         else
-          echo "⚠️ Xcode project not found or incompatible"
+          echo "❌ Examples directory not found"
+          exit 1
         fi
         
     - name: Run Example Tests
       run: |
-        # Use Swift to validate examples without requiring Xcode project
-        echo "Running tests for BubbleBar examples..."
-        
-        # Create a simple test harness
-        cat > test_examples.swift << 'EOF'
-        import Foundation
+        # Simple Swift script to validate examples
+        echo 'import Foundation
         
         // Check if Examples directory exists
         let fileManager = FileManager.default
@@ -164,8 +142,7 @@ jobs:
         } catch {
             print("❌ Error checking examples: \(error)")
             exit(1)
-        }
-        EOF
+        }' > test_examples.swift
         
-        # Run the test harness
+        # Run the test script
         swift test_examples.swift
