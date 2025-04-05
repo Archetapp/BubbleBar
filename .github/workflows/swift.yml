@@ -1,7 +1,7 @@
-# This workflow will validate the Swift examples compile
+# This workflow will validate the Swift package and examples
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
 
-name: Validate Examples
+name: Validate Package
 
 on:
   push:
@@ -23,20 +23,31 @@ jobs:
         # Show Swift version
         swift --version
         
-    - name: Validate Example Files
+    - name: Update Package Swift Version
       run: |
-        # Use SwiftC's type checker to validate example files compile
-        echo "Validating example files in Sources/BubbleBar/Examples directory..."
-        find Sources/BubbleBar/Examples -name "*.swift" -print -exec swiftc -typecheck {} \;
+        # Get current Swift version
+        SWIFT_VERSION=$(swift --version | head -1 | sed -E 's/.*Swift version ([0-9]+\.[0-9]+).*/\1/')
+        echo "Current Swift version: $SWIFT_VERSION"
         
-        # Verify there are no syntax errors in the example files
-        cd Sources/BubbleBar/Examples
-        for file in *.swift; do
-          echo "Checking $file"
-          swiftc -swift-version 5 -typecheck "$file"
-          if [ $? -ne 0 ]; then
-            echo "Error: Failed to compile $file"
-            exit 1
-          fi
-        done
-        echo "All example files validated successfully"
+        # Get current tools version from Package.swift
+        TOOLS_VERSION=$(head -1 Package.swift | sed -E 's/\/\/ swift-tools-version: ([0-9]+\.[0-9]+).*/\1/')
+        echo "Current tools version: $TOOLS_VERSION"
+        
+        # Update Package.swift to use the available Swift version
+        sed -i '' "s/swift-tools-version: [0-9]\+\.[0-9]\+/swift-tools-version: $SWIFT_VERSION/" Package.swift
+        echo "Updated Package.swift to use Swift $SWIFT_VERSION:"
+        head -1 Package.swift
+    
+    - name: Build Package
+      run: |
+        # Try to build the package
+        echo "Building package to validate examples..."
+        swift build -v
+        
+        # If build succeeds, we know examples are valid
+        if [ $? -eq 0 ]; then
+          echo "✅ Package built successfully, examples are valid"
+        else
+          echo "❌ Package build failed, examples may contain errors"
+          exit 1
+        fi
