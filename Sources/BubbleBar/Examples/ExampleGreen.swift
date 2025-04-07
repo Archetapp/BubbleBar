@@ -83,6 +83,7 @@ public struct ExampleGreen: View {
                     )
             }
             .bubbleBarStyle(.forest)
+            .bubbleBarGlass(true, material: .ultraThin)
         }
     }
     
@@ -91,7 +92,7 @@ public struct ExampleGreen: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: [.flexible(), .flexible(), .flexible(), .flexible()]) {
-                    ForEach(0 ..< 3) { i in
+                    ForEach(0 ..< 100) { i in
                         NavigationLink {
                             Color.green
                         } label: {
@@ -109,7 +110,6 @@ public struct ExampleGreen: View {
                 }
                 .padding()
             }
-            .background(Color.red)
         }
         .navigationTitle(Text("Test"))
     }
@@ -129,5 +129,4 @@ public struct ExampleGreen: View {
 //        .previewDisplayName("RTL")
 //        
     ExampleGreen(language: .japanese)
-        .previewDisplayName("Japanese")
 }

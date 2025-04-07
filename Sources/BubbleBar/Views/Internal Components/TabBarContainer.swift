@@ -34,7 +34,7 @@ extension BubbleBar {
                         glassBackground
                     } else {
                         configuration.shape
-                            .fill(theme.resolveColors(for: colorScheme).cardBackground)
+                            .background(theme.resolveColors(for: colorScheme).cardBackground)
                             .overlay {
                                 configuration.shape
                                     .stroke(theme.resolveColors(for: colorScheme).barStrokeColor, lineWidth: 0.5)
@@ -70,37 +70,13 @@ extension BubbleBar {
         /// Creates a glass-like background effect
         private var glassBackground: some View {
             GeometryReader { geometry in
-                let size = geometry.size
                 let tintColor = theme.resolveColors(for: colorScheme).cardBackground
                 
                 configuration.shape
-                    .fill(Material.ultraThinMaterial)
-                    .background {
-                        configuration.shape
-                            .fill()
-                            .visualEffect { content, _ in
-                                content
-                                    .layerEffect(
-                                        ShaderLibrary.glass(
-                                            size: size,
-                                            tint: tintColor,
-                                            blur: 12.0
-                                        ),
-                                        maxSampleOffset: CGSize(width: 12, height: 0)
-                                    )
-                                    .layerEffect(
-                                        ShaderLibrary.glass(
-                                            size: size,
-                                            tint: tintColor,
-                                            blur: 12.0
-                                        ),
-                                        maxSampleOffset: CGSize(width: 0, height: 12)
-                                    )
-                            }
-                    }
+                    .fill(configuration.glassMaterial ?? .ultraThinMaterial)
                     .overlay {
                         configuration.shape
-                            .fill(tintColor.opacity(0.1))
+                            .fill(tintColor.opacity(0.3))
                             .blendMode(.plusLighter)
                     }
                     .overlay {
