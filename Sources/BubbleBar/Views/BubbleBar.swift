@@ -289,12 +289,15 @@ public extension View {
     /// Applies a glass morphism effect to the bubble bar.
     /// - Parameters:
     ///   - enabled: Whether to enable the glass effect
+    ///   - material: Optional Material to use for the glass effect. If provided, this will override the custom shader.
     /// - Returns: A view with the modified glass effect
     func bubbleBarGlass(
-        _ enabled: Bool = true
+        _ enabled: Bool = true,
+        material: Material? = nil
     ) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.isGlass = enabled
+            config.glassMaterial = material
         }
     }
     

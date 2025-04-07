@@ -28,6 +28,7 @@ extension BubbleBar {
         public var glassBlurRadius: CGFloat
         public var glassOpacity: Double
         public var glassTint: Color
+        public var glassMaterial: Material?
         public var isVisible: Bool
         
         // Content spacing properties
@@ -58,6 +59,7 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
+            glassMaterial: Material? = nil,
             isVisible: Bool = true,
             contentBottomPadding: CGFloat = 0,
             minimumTouchTargetSize: CGSize = CGSize(width: 44, height: 44),
@@ -84,6 +86,7 @@ extension BubbleBar {
             self.glassBlurRadius = glassBlurRadius
             self.glassOpacity = glassOpacity
             self.glassTint = glassTint
+            self.glassMaterial = glassMaterial
             self.isVisible = isVisible
             self.contentBottomPadding = contentBottomPadding
             
@@ -119,6 +122,7 @@ extension BubbleBar {
             glassBlurRadius: CGFloat = 10,
             glassOpacity: Double = 0.2,
             glassTint: Color = .white,
+            glassMaterial: Material? = nil,
             isVisible: Bool = true,
             contentBottomPadding: CGFloat = 0
         ) {
@@ -152,6 +156,7 @@ extension BubbleBar {
                 glassBlurRadius: glassBlurRadius,
                 glassOpacity: glassOpacity,
                 glassTint: glassTint,
+                glassMaterial: glassMaterial,
                 isVisible: isVisible,
                 contentBottomPadding: contentBottomPadding
             )
@@ -204,7 +209,7 @@ extension BubbleBar {
             
             if shouldUseHighContrast {
                 self.style = .highContrast
-            } else if self.originalStyle != nil {
+            } else {
                 self.style = self.originalStyle
             }
             

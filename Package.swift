@@ -25,9 +25,6 @@ let package = Package(
             name: "BubbleBar",
             dependencies: [
                 "SwiftUIX"
-            ],
-            resources: [
-                .process("Theme/GlassShader.metal")
             ]
         )
     ]
