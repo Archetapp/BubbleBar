@@ -341,15 +341,6 @@ NOTE: Padding is defaulted to 4 between inner items and outer shape. (Might make
 
 BubbleBar is designed with accessibility as a priority, ensuring a great experience for all users.
 
-### Key Accessibility Features
-
-- **VoiceOver Support**: Proper accessibility labels, hints, and traits
-- **Dynamic Type**: Full support for all text sizes
-- **Reduced Motion**: Simplified animations when Reduce Motion is enabled
-- **High Contrast**: Accessible color themes with adequate contrast
-- **Keyboard Navigation**: Complete keyboard focus and selection support
-- **RTL Languages**: Right-to-left language support
-
 ### Accessibility Checklist
 
 - ✅ **VoiceOver**: Tab items have proper labels, hints, and traits
