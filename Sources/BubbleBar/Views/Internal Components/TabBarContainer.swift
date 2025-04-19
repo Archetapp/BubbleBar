@@ -20,12 +20,10 @@ extension BubbleBar {
         
         var body: some View {
             content
-                .padding(configuration.padding)
+                .padding(configuration.innerPadding)
                 .frame(
                     minWidth: configuration.size?.width,
-                    maxWidth: configuration.size == nil ? nil : configuration.size?.width,
-                    minHeight: configuration.size?.height,
-                    maxHeight: configuration.size?.height ?? 64,
+                    maxWidth: configuration.size == nil ? .infinity : configuration.size?.width,
                     alignment: .center
                 )
                 .fixedSize(horizontal: configuration.adaptiveItemsWidth && configuration.size == nil, vertical: true)
@@ -50,14 +48,14 @@ extension BubbleBar {
         /// Calculates the size of the container
         private var size: CGSize {
             let width = configuration.size?.width ?? Screen.main.bounds.width - 32
-            let height = configuration.size?.height ?? 60
+            let height = configuration.size?.height ?? 80
             return CGSize(width: width, height: height)
         }
         
         /// Calculates the total height including padding for content avoidance
         private func calculateTotalHeight() -> CGFloat {
             // Base height of the tab bar
-            let baseHeight = configuration.size?.height ?? 60
+            let baseHeight = configuration.size?.height ?? 80
             
             // Add vertical padding of the tab bar container
             let totalHeight = baseHeight + configuration.padding.top + configuration.padding.bottom
@@ -96,4 +94,4 @@ struct TabBarSizePreferenceKey: PreferenceKey, Sendable {
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
     }
-} 
+}

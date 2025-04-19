@@ -9,6 +9,13 @@ extension BubbleBar {
         case bottom
     }
     
+    public enum LabelPosition {
+        case top
+        case bottom
+        case left
+        case right
+    }
+    
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
         public var style: Style
@@ -17,11 +24,14 @@ extension BubbleBar {
         public var viewTransitionAnimation: Animation
         public var viewTransition: AnyTransition
         public var showLabels: Bool
+        public var labelsVisible: Bool
+        public var labelPosition: LabelPosition
         public var size: CGSize?
         public var adaptiveItemsWidth: Bool
         public var shape: AnyShape
         public var itemShape: AnyShape
         public var padding: EdgeInsets
+        public var innerPadding: EdgeInsets
         public var bubbleBarItemPadding: EdgeInsets
         public var equalItemSizing: Bool
         
@@ -60,11 +70,14 @@ extension BubbleBar {
             viewTransitionAnimation: Animation = .smooth,
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
+            labelsVisible: Bool = false,
+            labelPosition: LabelPosition = .right,
             size: CGSize? = nil,
             adaptiveItemsWidth: Bool = false,
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
             itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            innerPadding: EdgeInsets = EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
             bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
@@ -91,11 +104,14 @@ extension BubbleBar {
             self.viewTransitionAnimation = viewTransitionAnimation
             self.viewTransition = viewTransition
             self.showLabels = showLabels
+            self.labelsVisible = labelsVisible
+            self.labelPosition = labelPosition
             self.size = size
             self.adaptiveItemsWidth = adaptiveItemsWidth
             self.shape = shape
             self.itemShape = itemShape
             self.padding = padding
+            self.innerPadding = innerPadding
             self.bubbleBarItemPadding = bubbleBarItemPadding
             self.equalItemSizing = equalItemSizing
             self.bubbleBarItemSpacing = bubbleBarItemSpacing

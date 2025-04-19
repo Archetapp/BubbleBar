@@ -1,7 +1,6 @@
 // Created By Jared Davidson
 
 import SwiftUIX
-import CoreFoundation
 
 /// A SwiftUI package that provides a customizable, animated tab bar with a bubble effect.
 public enum BubbleBar {}
@@ -121,11 +120,11 @@ public struct BubbleBarView<Content: View>: View {
                                 }
                             }
                         }
-                    }
-                            .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
-                            .fixedSize(horizontal: false, vertical: true)
+                    }.frame(maxHeight: 80)
+                    //                    .fixedSize(horizontal: true, vertical: false)
                 }
             }
+            .frame(width: Screen.width)
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
             .environment(\.theme, configuration.style.theme)
             .compositingGroup()
@@ -258,6 +257,15 @@ public extension View {
         }
     }
     
+    /// Sets the inner padding of the bubble bar content.
+    /// - Parameter padding: The inner padding to apply
+    /// - Returns: A view with the modified bubble bar inner padding
+    func bubbleBarInnerPadding(_ padding: EdgeInsets) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.innerPadding = padding
+        }
+    }
+    
     /// Configures the shadow for the bubble bar.
     /// - Parameters:
     ///   - radius: The blur radius of the shadow
@@ -363,6 +371,24 @@ public extension View {
     func bubbleBarItemSpacing(_ regular: CGFloat = 4, accessibility: CGFloat = 8) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.bubbleBarItemSpacing = (isAccessibilitySize: accessibility, regular: regular)
+        }
+    }
+    
+    /// Sets the position of labels in the bubble bar.
+    /// - Parameter position: The position of the labels (.top, .bottom, .left, or .right)
+    /// - Returns: A view with the modified label position
+    func bubbleBarLabelPosition(_ position: BubbleBar.LabelPosition) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.labelPosition = position
+        }
+    }
+    
+    /// Controls whether labels are visible in the bubble bar.
+    /// - Parameter visible: Whether labels should be visible
+    /// - Returns: A view with the modified label visibility
+    func bubbleBarLabelsVisible(_ visible: Bool) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.labelsVisible = visible
         }
     }
 }
