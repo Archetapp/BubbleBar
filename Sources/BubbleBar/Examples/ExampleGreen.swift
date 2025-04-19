@@ -84,7 +84,6 @@ public struct ExampleGreen: View {
             }
             .bubbleBarStyle(.forest)
             .bubbleBarItemPosition(.center)
-            .bubbleBarLabelPosition(.bottom)
             .bubbleBarGlass(material: .ultraThin)
             .bubbleBarItemSpacing(0)
         }

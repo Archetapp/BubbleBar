@@ -25,17 +25,18 @@ public struct ExampleOrange: View {
                 .tabBarItem {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
-
+            Text("Focus View")
+                .tabBarItem {
+                    Label("Focus", systemImage: "timer")
+                }
         }
         .bubbleBarStyle(.forest)
-        .bubbleBarLabelsVisible(true)
-        .bubbleBarItemPosition(.bottom)
-        .bubbleBarLabelPosition(.bottom)
+//        .bubbleBarLabelsVisible(true)
 //        .bubbleBarItemSpacing(12)
 //        .showBubbleBarLabels(true)
 //        .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
 //        .bubbleBarContentPadding(5)
-        .bubbleBarItemEqualSizing(true)
+//        .bubbleBarItemEqualSizing(true)
 //        .bubbleBarAdaptiveItemsWidth(true)
     }
 }
