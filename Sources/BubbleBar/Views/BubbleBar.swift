@@ -91,7 +91,7 @@ public struct BubbleBarView<Content: View>: View {
                 _VariadicViewAdapter(content) { content in
                     HStack(spacing: dynamicTypeSize.isAccessibilitySize ?
                            configuration.bubbleBarItemSpacing.isAccessibilitySize :
-                            configuration.bubbleBarItemSpacing.regular) {
+                           configuration.bubbleBarItemSpacing.regular) {
                         ForEach(content.children.indices, id: \.self) { index in
                             if let itemInfo = content.children[index].traits.tabBarLabel {
                                 BubbleBar._TabBarButton(
@@ -122,7 +122,7 @@ public struct BubbleBarView<Content: View>: View {
                         }
                     }
                     .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(horizontal: true, vertical: true)
                 }
             }
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)

@@ -23,7 +23,7 @@ extension BubbleBar {
                 .padding(configuration.innerPadding)
                 .frame(
                     minWidth: configuration.size?.width,
-                    maxWidth: configuration.size == nil ? nil : configuration.size?.width,
+                    maxWidth: configuration.size == nil ? .infinity : configuration.size?.width,
                     alignment: .center
                 )
                 .fixedSize(horizontal: configuration.adaptiveItemsWidth && configuration.size == nil, vertical: false)
@@ -94,4 +94,4 @@ struct TabBarSizePreferenceKey: PreferenceKey, Sendable {
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
     }
-} 
+}

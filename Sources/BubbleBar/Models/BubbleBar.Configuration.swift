@@ -77,7 +77,7 @@ extension BubbleBar {
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
             itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
-            innerPadding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10),
+            innerPadding: EdgeInsets = EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
             bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),

@@ -50,10 +50,11 @@ extension BubbleBar {
                     label
                         .labelStyle(.titleOnly)
                         .font(.body.weight(.medium).leading(.loose))
-                        .minimumScaleFactor(0.05)
+                        .minimumScaleFactor(0.01) // Reduced from 0.05 to allow for more aggressive scaling
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
+                        .fixedSize(horizontal: false, vertical: true) // Force the label to shrink rather than expand
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
