@@ -18,7 +18,7 @@ struct BubbleBarExampleApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ExampleGreen(language: language)
+            ExampleOrange()
                 .onAppear {
                     setupTestEnvironment()
                 }

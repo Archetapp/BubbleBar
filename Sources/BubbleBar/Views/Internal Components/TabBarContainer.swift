@@ -34,7 +34,7 @@ extension BubbleBar {
                         glassBackground
                     } else {
                         configuration.shape
-                            .background(theme.resolveColors(for: colorScheme).cardBackground)
+                            .fill(theme.resolveColors(for: colorScheme).cardBackground)
                             .overlay {
                                 configuration.shape
                                     .stroke(theme.resolveColors(for: colorScheme).barStrokeColor, lineWidth: 0.5)

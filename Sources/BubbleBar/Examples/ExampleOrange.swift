@@ -2,10 +2,14 @@
 
 import SwiftUI
 
-struct ExampleOrange: View {
+public struct ExampleOrange: View {
     @State private var selectedTab = 0
     
-    var body: some View {
+    public init(selectedTab: Int = 0) {
+        self.selectedTab = selectedTab
+    }
+    
+    public var body: some View {
         BubbleBarView(selectedTab: $selectedTab) {
             Text("Home View")
                 .tabBarItem {
@@ -23,7 +27,8 @@ struct ExampleOrange: View {
                 }
 
         }
-        .bubbleBarStyle(.desert)
+        .bubbleBarStyle(.forest)
+        .bubbleBarItemPosition(.bottom)
         
     }
 }

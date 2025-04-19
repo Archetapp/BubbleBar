@@ -3,6 +3,12 @@
 import SwiftUIX
 
 extension BubbleBar {
+    public enum ItemBarPosition {
+        case center
+        case top
+        case bottom
+    }
+    
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
         public var style: Style
@@ -18,6 +24,13 @@ extension BubbleBar {
         public var padding: EdgeInsets
         public var bubbleBarItemPadding: EdgeInsets
         public var equalItemSizing: Bool
+        
+        // Item spacing
+        public var bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat)
+        
+        // Item bar position and size
+        public var itemBarPosition: ItemBarPosition
+        public var itemBarSize: CGSize?
         
         // Shadow properties
         public var shadowRadius: CGFloat
@@ -53,6 +66,9 @@ extension BubbleBar {
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
             bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
+            bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
+            itemBarPosition: ItemBarPosition = .center,
+            itemBarSize: CGSize? = nil,
             shadowRadius: CGFloat = 1,
             shadowOffset: CGPoint = .zero,
             isGlass: Bool = false,
@@ -80,6 +96,9 @@ extension BubbleBar {
             self.padding = padding
             self.bubbleBarItemPadding = bubbleBarItemPadding
             self.equalItemSizing = equalItemSizing
+            self.bubbleBarItemSpacing = bubbleBarItemSpacing
+            self.itemBarPosition = itemBarPosition
+            self.itemBarSize = itemBarSize
             self.shadowRadius = shadowRadius
             self.shadowOffset = shadowOffset
             self.isGlass = isGlass
@@ -116,6 +135,9 @@ extension BubbleBar {
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
             bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
+            bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
+            itemBarPosition: ItemBarPosition = .center,
+            itemBarSize: CGSize? = nil,
             shadowRadius: CGFloat = 8,
             shadowOffset: CGPoint = .zero,
             isGlass: Bool = false,
@@ -150,6 +172,9 @@ extension BubbleBar {
                 padding: padding,
                 bubbleBarItemPadding: bubbleBarItemPadding,
                 equalItemSizing: equalItemSizing,
+                bubbleBarItemSpacing: bubbleBarItemSpacing,
+                itemBarPosition: itemBarPosition,
+                itemBarSize: itemBarSize,
                 shadowRadius: shadowRadius,
                 shadowOffset: shadowOffset,
                 isGlass: isGlass,

@@ -18,15 +18,29 @@ extension BubbleBar {
         let showLabel: Bool
         let action: () -> Void
         
+        private var itemBarHeight: CGFloat {
+            if configuration.itemBarPosition == .center {
+                return configuration.itemBarSize?.height ?? (dynamicTypeSize.isAccessibilitySize ? 36 : 24)
+            } else {
+                return configuration.itemBarSize?.height ?? 4
+            }
+        }
+        
+        private var itemBarWidth: CGFloat? {
+            return configuration.itemBarSize?.width
+        }
+        
         var body: some View {
             Button(action: action) {
-                HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 8 : 4) {
+                HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 
+                       configuration.bubbleBarItemSpacing.isAccessibilitySize : 
+                       configuration.bubbleBarItemSpacing.regular) {
                     label
                         .labelStyle(.iconOnly)
                         .font(.title3.weight(.regular).leading(.loose))
                         .minimumScaleFactor(0.8)
-                        .frame(width: dynamicTypeSize.isAccessibilitySize ? 36 : 24, 
-                               height: dynamicTypeSize.isAccessibilitySize ? 36 : 24)
+                        .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil, 
+                               height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
@@ -53,14 +67,45 @@ extension BubbleBar {
                 .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
                 .background {
                     if isSelected {
-                        ZStack {
-                            configuration.itemShape
-                                .fill(theme.resolveColors(for: colorScheme).bubbleBackgroundColor)
-                            configuration.itemShape
-                                .stroke(theme.resolveColors(for: colorScheme).bubbleStrokeColor, lineWidth: 0.5)
-                        }
-                        .if(!reduceMotion) { view in
-                            view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                        switch configuration.itemBarPosition {
+                        case .center:
+                            ZStack {
+                                configuration.itemShape
+                                    .fill(theme.resolveColors(for: colorScheme).bubbleBackgroundColor)
+                                configuration.itemShape
+                                    .stroke(theme.resolveColors(for: colorScheme).bubbleStrokeColor, lineWidth: 0.5)
+                            }
+                            .if(!reduceMotion) { view in
+                                view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                            }
+                        case .top:
+                            VStack(spacing: 0) {
+                                configuration.itemShape
+                                    .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                    .frame(
+                                        maxWidth: itemBarWidth ?? .infinity,
+                                        maxHeight: itemBarHeight
+                                    )
+                                    .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
+                                    .if(!reduceMotion) { view in
+                                        view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                                    }
+                                Spacer()
+                            }
+                        case .bottom:
+                            VStack(spacing: 0) {
+                                Spacer()
+                                configuration.itemShape
+                                    .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                    .frame(
+                                        maxWidth: itemBarWidth ?? .infinity,
+                                        maxHeight: itemBarHeight
+                                    )
+                                    .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
+                                    .if(!reduceMotion) { view in
+                                        view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                                    }
+                            }
                         }
                     }
                 }

@@ -332,6 +332,35 @@ public extension View {
             config.contentBottomPadding = padding
         }
     }
+    
+    /// Sets the position of the item bar indicator.
+    /// - Parameter position: The position of the item bar (.center, .top, or .bottom)
+    /// - Returns: A view with the modified item bar position
+    func bubbleBarItemPosition(_ position: BubbleBar.ItemBarPosition) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.itemBarPosition = position
+        }
+    }
+    
+    /// Sets the size of the item bar indicator.
+    /// - Parameter size: The size to apply to the item bar
+    /// - Returns: A view with the modified item bar size
+    func bubbleBarItemSize(_ size: CGSize) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.itemBarSize = size
+        }
+    }
+    
+    /// Sets the spacing between items in the bubble bar.
+    /// - Parameters:
+    ///   - regular: The spacing to use for regular dynamic type sizes
+    ///   - accessibility: The spacing to use when in accessibility sizes
+    /// - Returns: A view with the modified item spacing
+    func bubbleBarItemSpacing(regular: CGFloat = 4, accessibility: CGFloat = 8) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.bubbleBarItemSpacing = (isAccessibilitySize: accessibility, regular: regular)
+        }
+    }
 }
 
 // MARK: - Deprecated
