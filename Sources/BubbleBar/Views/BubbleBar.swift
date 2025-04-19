@@ -1,6 +1,7 @@
 // Created By Jared Davidson
 
 import SwiftUIX
+import CoreFoundation
 
 /// A SwiftUI package that provides a customizable, animated tab bar with a bubble effect.
 public enum BubbleBar {}
@@ -347,9 +348,10 @@ public extension View {
     /// Sets the size of the item bar indicator.
     /// - Parameter size: The size to apply to the item bar
     /// - Returns: A view with the modified item bar size
-    func bubbleBarItemSize(_ size: CGSize) -> some View {
+    func bubbleBarItemSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.itemBarSize = size
+            config.itemBarWidth = width
+            config.itemBarHeight = height
         }
     }
     

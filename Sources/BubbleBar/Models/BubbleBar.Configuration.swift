@@ -30,7 +30,8 @@ extension BubbleBar {
         
         // Item bar position and size
         public var itemBarPosition: ItemBarPosition
-        public var itemBarSize: CGSize?
+        public var itemBarWidth: CGFloat?
+        public var itemBarHeight: CGFloat?
         
         // Shadow properties
         public var shadowRadius: CGFloat
@@ -68,7 +69,8 @@ extension BubbleBar {
             equalItemSizing: Bool = false,
             bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
             itemBarPosition: ItemBarPosition = .center,
-            itemBarSize: CGSize? = nil,
+            itemBarWidth: CGFloat? = nil,
+            itemBarHeight: CGFloat? = nil,
             shadowRadius: CGFloat = 1,
             shadowOffset: CGPoint = .zero,
             isGlass: Bool = false,
@@ -98,7 +100,8 @@ extension BubbleBar {
             self.equalItemSizing = equalItemSizing
             self.bubbleBarItemSpacing = bubbleBarItemSpacing
             self.itemBarPosition = itemBarPosition
-            self.itemBarSize = itemBarSize
+            self.itemBarWidth = itemBarWidth
+            self.itemBarHeight = itemBarHeight
             self.shadowRadius = shadowRadius
             self.shadowOffset = shadowOffset
             self.isGlass = isGlass
@@ -114,77 +117,6 @@ extension BubbleBar {
             self.accessibilitySpacing = accessibilitySpacing
             self.useReducedMotion = useReducedMotion
             self.increasedContrastEnabled = increasedContrastEnabled
-        }
-        
-        /// Convenience initializer for direct color customization
-        public convenience init(
-            selectedItemColor: Color,
-            unselectedItemColor: Color,
-            bubbleBackgroundColor: Color,
-            bubbleStrokeColor: Color,
-            barStrokeColor: Color,
-            barShadowColor: Color,
-            animation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
-            viewTransitionAnimation: Animation = .smooth,
-            viewTransition: AnyTransition = .opacity,
-            showLabels: Bool = true,
-            size: CGSize? = nil,
-            adaptiveItemsWidth: Bool = false,
-            shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
-            itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
-            padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
-            bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
-            equalItemSizing: Bool = false,
-            bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
-            itemBarPosition: ItemBarPosition = .center,
-            itemBarSize: CGSize? = nil,
-            shadowRadius: CGFloat = 8,
-            shadowOffset: CGPoint = .zero,
-            isGlass: Bool = false,
-            glassBlurRadius: CGFloat = 10,
-            glassOpacity: Double = 0.2,
-            glassTint: Color = .white,
-            glassMaterial: Material? = nil,
-            isVisible: Bool = true,
-            contentBottomPadding: CGFloat = 0
-        ) {
-            // Create a custom style with the provided colors
-            let customStyle = Style(
-                selectedItemColor: selectedItemColor,
-                unselectedItemColor: unselectedItemColor,
-                bubbleBackgroundColor: selectedItemColor.opacity(0.15),
-                bubbleStrokeColor: selectedItemColor.opacity(0.4),
-                barBackgroundColor: .clear, // We'll handle background separately
-                barStrokeColor: selectedItemColor.opacity(0.2),
-                barShadowColor: barShadowColor
-            )
-            
-            self.init(
-                style: customStyle,
-                animation: animation,
-                viewTransitionAnimation: viewTransitionAnimation,
-                viewTransition: viewTransition,
-                showLabels: showLabels,
-                size: size,
-                adaptiveItemsWidth: adaptiveItemsWidth,
-                shape: shape,
-                itemShape: itemShape,
-                padding: padding,
-                bubbleBarItemPadding: bubbleBarItemPadding,
-                equalItemSizing: equalItemSizing,
-                bubbleBarItemSpacing: bubbleBarItemSpacing,
-                itemBarPosition: itemBarPosition,
-                itemBarSize: itemBarSize,
-                shadowRadius: shadowRadius,
-                shadowOffset: shadowOffset,
-                isGlass: isGlass,
-                glassBlurRadius: glassBlurRadius,
-                glassOpacity: glassOpacity,
-                glassTint: glassTint,
-                glassMaterial: glassMaterial,
-                isVisible: isVisible,
-                contentBottomPadding: contentBottomPadding
-            )
         }
         
         /// Updates the configuration based on the current accessibility settings
