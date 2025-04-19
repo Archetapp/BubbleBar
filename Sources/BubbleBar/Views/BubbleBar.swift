@@ -89,7 +89,9 @@ public struct BubbleBarView<Content: View>: View {
             
             BubbleBar._TabBarContainer {
                 _VariadicViewAdapter(content) { content in
-                    HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 4 : 2) {
+                    HStack(spacing: dynamicTypeSize.isAccessibilitySize ?
+                           configuration.bubbleBarItemSpacing.isAccessibilitySize :
+                            configuration.bubbleBarItemSpacing.regular) {
                         ForEach(content.children.indices, id: \.self) { index in
                             if let itemInfo = content.children[index].traits.tabBarLabel {
                                 BubbleBar._TabBarButton(
@@ -101,12 +103,12 @@ public struct BubbleBarView<Content: View>: View {
                                     action: {
                                         withAnimation(reduceMotion ? .default : configuration.animation) {
                                             selectedTab = index
-                                            #if canImport(UIKit)
+#if canImport(UIKit)
                                             UIAccessibility.post(
                                                 notification: .screenChanged,
                                                 argument: "Switched to \(itemInfo.accessibilityLabel)"
                                             )
-                                            #endif
+#endif
                                         }
                                     }
                                 )
@@ -119,8 +121,8 @@ public struct BubbleBarView<Content: View>: View {
                             }
                         }
                     }
-                    .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
-                    .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
+                            .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
@@ -155,7 +157,7 @@ public struct BubbleBarView<Content: View>: View {
         .ignoresSafeArea(.keyboard)
         .onPreferenceChange(TabBarSizePreferenceKey.self) { height in
             if contentPadding > 0 {
-                Task { @MainActor in 
+                Task { @MainActor in
                     self.tabBarHeight = height
                 }
             }
@@ -218,7 +220,7 @@ public extension View {
             config.size = size
         }
     }
-
+    
     /// adaptively adjust the bubble bar width of the bubble bar items's width
     /// - Parameter enabled: Whether to enable equal width for all items's total width
     /// - Returns: A view with the modified bubble bar item width
@@ -323,9 +325,9 @@ public extension View {
     /// - Parameter padding: The amount of bottom padding to apply to content
     /// - Returns: A view with the specified bottom padding to avoid the bubble bar
     ///
-    /// By default, no extra padding is added (padding = 0). With padding = 0, 
-    /// the content will respect the system's safe area insets and the tab bar will 
-    /// appear within the safe area. To add explicit spacing between content and 
+    /// By default, no extra padding is added (padding = 0). With padding = 0,
+    /// the content will respect the system's safe area insets and the tab bar will
+    /// appear within the safe area. To add explicit spacing between content and
     /// the tab bar, set this to a positive value.
     func bubbleBarContentPadding(_ padding: CGFloat) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
@@ -356,7 +358,7 @@ public extension View {
     ///   - regular: The spacing to use for regular dynamic type sizes
     ///   - accessibility: The spacing to use when in accessibility sizes
     /// - Returns: A view with the modified item spacing
-    func bubbleBarItemSpacing(regular: CGFloat = 4, accessibility: CGFloat = 8) -> some View {
+    func bubbleBarItemSpacing(_ regular: CGFloat = 4, accessibility: CGFloat = 8) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.bubbleBarItemSpacing = (isAccessibilitySize: accessibility, regular: regular)
         }

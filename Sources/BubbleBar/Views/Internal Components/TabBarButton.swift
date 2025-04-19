@@ -32,14 +32,12 @@ extension BubbleBar {
         
         var body: some View {
             Button(action: action) {
-                HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 
-                       configuration.bubbleBarItemSpacing.isAccessibilitySize : 
-                       configuration.bubbleBarItemSpacing.regular) {
+                HStack(spacing: dynamicTypeSize.isAccessibilitySize ? 8 : 4) {
                     label
                         .labelStyle(.iconOnly)
                         .font(.title3.weight(.regular).leading(.loose))
                         .minimumScaleFactor(0.8)
-                        .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil, 
+                        .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
                                height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                         .if(!reduceMotion) { view in
@@ -62,53 +60,53 @@ extension BubbleBar {
                             .transition(.opacity)
                     }
                 }
-                .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
-                .padding(configuration.bubbleBarItemPadding)
-                .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
-                .background {
-                    if isSelected {
-                        switch configuration.itemBarPosition {
-                        case .center:
-                            ZStack {
-                                configuration.itemShape
-                                    .fill(theme.resolveColors(for: colorScheme).bubbleBackgroundColor)
-                                configuration.itemShape
-                                    .stroke(theme.resolveColors(for: colorScheme).bubbleStrokeColor, lineWidth: 0.5)
-                            }
-                            .if(!reduceMotion) { view in
-                                view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
-                            }
-                        case .top:
-                            VStack(spacing: 0) {
-                                configuration.itemShape
-                                    .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
-                                    .frame(
-                                        maxWidth: itemBarWidth ?? .infinity,
-                                        maxHeight: itemBarHeight
-                                    )
-                                    .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
-                                    .if(!reduceMotion) { view in
-                                        view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
-                                    }
-                                Spacer()
-                            }
-                        case .bottom:
-                            VStack(spacing: 0) {
-                                Spacer()
-                                configuration.itemShape
-                                    .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
-                                    .frame(
-                                        maxWidth: itemBarWidth ?? .infinity,
-                                        maxHeight: itemBarHeight
-                                    )
-                                    .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
-                                    .if(!reduceMotion) { view in
-                                        view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
-                                    }
+                        .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
+                        .padding(configuration.bubbleBarItemPadding)
+                        .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
+                        .background {
+                            if isSelected {
+                                switch configuration.itemBarPosition {
+                                    case .center:
+                                        ZStack {
+                                            configuration.itemShape
+                                                .fill(theme.resolveColors(for: colorScheme).bubbleBackgroundColor)
+                                            configuration.itemShape
+                                                .stroke(theme.resolveColors(for: colorScheme).bubbleStrokeColor, lineWidth: 0.5)
+                                        }
+                                        .if(!reduceMotion) { view in
+                                            view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                                        }
+                                    case .top:
+                                        VStack(spacing: 0) {
+                                            configuration.itemShape
+                                                .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                                .frame(
+                                                    maxWidth: itemBarWidth ?? .infinity,
+                                                    maxHeight: itemBarHeight
+                                                )
+                                                .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
+                                                .if(!reduceMotion) { view in
+                                                    view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                                                }
+                                            Spacer()
+                                        }
+                                    case .bottom:
+                                        VStack(spacing: 0) {
+                                            Spacer()
+                                            configuration.itemShape
+                                                .fill(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                                .frame(
+                                                    maxWidth: itemBarWidth ?? .infinity,
+                                                    maxHeight: itemBarHeight
+                                                )
+                                                .padding(.horizontal, configuration.bubbleBarItemPadding.leading)
+                                                .if(!reduceMotion) { view in
+                                                    view.matchedGeometryEffect(id: "BUBBLE", in: namespace)
+                                                }
+                                        }
+                                }
                             }
                         }
-                    }
-                }
             }
             .buttonStyle(.plain)
             .frame(maxWidth: configuration.equalItemSizing ? .infinity : nil)
@@ -133,9 +131,9 @@ extension BubbleBar {
         
         /// Gets the appropriate accessibility hint based on selection state
         private var accessibilityHint: String {
-            isSelected ? 
-                NSLocalizedString("Currently selected", comment: "Accessibility hint for selected tab") : 
-                NSLocalizedString("Double tap to switch to this tab", comment: "Accessibility hint for unselected tab")
+            isSelected ?
+            NSLocalizedString("Currently selected", comment: "Accessibility hint for selected tab") :
+            NSLocalizedString("Double tap to switch to this tab", comment: "Accessibility hint for unselected tab")
         }
     }
 }
