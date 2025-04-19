@@ -25,14 +25,12 @@ public struct ExampleOrange: View {
                 .tabBarItem {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
-            Text("Focus View")
-                .tabBarItem {
-                    Label("Focus", systemImage: "timer")
-                }
 
         }
         .bubbleBarStyle(.forest)
-        .bubbleBarLabelsVisible(false)
+        .bubbleBarLabelsVisible(true)
+        .bubbleBarItemPosition(.bottom)
+        .bubbleBarLabelPosition(.bottom)
 //        .bubbleBarItemSpacing(12)
 //        .showBubbleBarLabels(true)
 //        .bubbleBarShape(RoundedRectangle(cornerRadius: 10))

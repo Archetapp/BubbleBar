@@ -50,7 +50,7 @@ extension BubbleBar {
                     label
                         .labelStyle(.titleOnly)
                         .font(.body.weight(.medium).leading(.loose))
-                        .minimumScaleFactor(0.01) // Reduced from 0.05 to allow for more aggressive scaling
+                        .minimumScaleFactor(0.01) // Reduced to allow for aggressive scaling with multi-byte characters
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
@@ -94,7 +94,7 @@ extension BubbleBar {
                     }
                     .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
                     .padding(configuration.bubbleBarItemPadding)
-                    .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: false)
+                    .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: true)
                     .background {
                         switch configuration.itemBarPosition {
                             case .center:
