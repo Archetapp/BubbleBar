@@ -22,6 +22,7 @@ extension BubbleBar {
         public var shape: AnyShape
         public var itemShape: AnyShape
         public var padding: EdgeInsets
+        public var innerPadding: EdgeInsets
         public var bubbleBarItemPadding: EdgeInsets
         public var equalItemSizing: Bool
         
@@ -65,6 +66,7 @@ extension BubbleBar {
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
             itemShape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 24)),
             padding: EdgeInsets = EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6),
+            innerPadding: EdgeInsets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10),
             bubbleBarItemPadding: EdgeInsets = EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14),
             equalItemSizing: Bool = false,
             bubbleBarItemSpacing: (isAccessibilitySize: CGFloat, regular: CGFloat) = (8, 4),
@@ -96,6 +98,7 @@ extension BubbleBar {
             self.shape = shape
             self.itemShape = itemShape
             self.padding = padding
+            self.innerPadding = innerPadding
             self.bubbleBarItemPadding = bubbleBarItemPadding
             self.equalItemSizing = equalItemSizing
             self.bubbleBarItemSpacing = bubbleBarItemSpacing

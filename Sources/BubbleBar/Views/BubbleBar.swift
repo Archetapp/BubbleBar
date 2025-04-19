@@ -1,7 +1,6 @@
 // Created By Jared Davidson
 
 import SwiftUIX
-import CoreFoundation
 
 /// A SwiftUI package that provides a customizable, animated tab bar with a bubble effect.
 public enum BubbleBar {}
@@ -104,12 +103,12 @@ public struct BubbleBarView<Content: View>: View {
                                     action: {
                                         withAnimation(reduceMotion ? .default : configuration.animation) {
                                             selectedTab = index
-#if canImport(UIKit)
+                                            #if canImport(UIKit)
                                             UIAccessibility.post(
                                                 notification: .screenChanged,
                                                 argument: "Switched to \(itemInfo.accessibilityLabel)"
                                             )
-#endif
+                                            #endif
                                         }
                                     }
                                 )
@@ -122,8 +121,8 @@ public struct BubbleBarView<Content: View>: View {
                             }
                         }
                     }
-                            .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
-                            .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? 60 : 50)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
@@ -158,7 +157,7 @@ public struct BubbleBarView<Content: View>: View {
         .ignoresSafeArea(.keyboard)
         .onPreferenceChange(TabBarSizePreferenceKey.self) { height in
             if contentPadding > 0 {
-                Task { @MainActor in
+                Task { @MainActor in 
                     self.tabBarHeight = height
                 }
             }
@@ -221,7 +220,7 @@ public extension View {
             config.size = size
         }
     }
-    
+
     /// adaptively adjust the bubble bar width of the bubble bar items's width
     /// - Parameter enabled: Whether to enable equal width for all items's total width
     /// - Returns: A view with the modified bubble bar item width
@@ -255,6 +254,15 @@ public extension View {
     func bubbleBarPadding(_ padding: EdgeInsets) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.padding = padding
+        }
+    }
+    
+    /// Sets the inner padding of the bubble bar content.
+    /// - Parameter padding: The inner padding to apply
+    /// - Returns: A view with the modified bubble bar inner padding
+    func bubbleBarInnerPadding(_ padding: EdgeInsets) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.innerPadding = padding
         }
     }
     
@@ -326,9 +334,9 @@ public extension View {
     /// - Parameter padding: The amount of bottom padding to apply to content
     /// - Returns: A view with the specified bottom padding to avoid the bubble bar
     ///
-    /// By default, no extra padding is added (padding = 0). With padding = 0,
-    /// the content will respect the system's safe area insets and the tab bar will
-    /// appear within the safe area. To add explicit spacing between content and
+    /// By default, no extra padding is added (padding = 0). With padding = 0, 
+    /// the content will respect the system's safe area insets and the tab bar will 
+    /// appear within the safe area. To add explicit spacing between content and 
     /// the tab bar, set this to a positive value.
     func bubbleBarContentPadding(_ padding: CGFloat) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in

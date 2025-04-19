@@ -20,15 +20,13 @@ extension BubbleBar {
         
         var body: some View {
             content
-                .padding(configuration.padding)
+                .padding(configuration.innerPadding)
                 .frame(
                     minWidth: configuration.size?.width,
                     maxWidth: configuration.size == nil ? nil : configuration.size?.width,
-                    minHeight: configuration.size?.height,
-                    maxHeight: configuration.size?.height ?? 64,
                     alignment: .center
                 )
-                .fixedSize(horizontal: configuration.adaptiveItemsWidth && configuration.size == nil, vertical: true)
+                .fixedSize(horizontal: configuration.adaptiveItemsWidth && configuration.size == nil, vertical: false)
                 .background {
                     if configuration.isGlass {
                         glassBackground

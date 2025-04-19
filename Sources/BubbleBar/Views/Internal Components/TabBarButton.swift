@@ -35,31 +35,33 @@ extension BubbleBar {
                 VStack(spacing: 0) {
                     upperline
                     HStack(spacing: 4) {
-                        label
-                            .labelStyle(.iconOnly)
-                            .font(.title3.weight(.regular).leading(.loose))
-                            .minimumScaleFactor(0.8)
-                            .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
-                                   height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
-                            .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
-                            .if(!reduceMotion) { view in
-                                view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
-                            }
-                            .accessibility(label: Text(accessibilityLabel))
-                        
-                        if isSelected && showLabel {
+                        VStack {
                             label
-                                .labelStyle(.titleOnly)
-                                .font(.body.weight(.medium).leading(.loose))
-                                .minimumScaleFactor(0.5)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
-                                .foregroundColor(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                .labelStyle(.iconOnly)
+                                .font(.title3.weight(.regular).leading(.loose))
+                                .minimumScaleFactor(0.8)
+                                .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
+                                       height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
+                                .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                                 .if(!reduceMotion) { view in
-                                    view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
+                                    view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
                                 }
-                                .transition(.opacity)
+                                .accessibility(label: Text(accessibilityLabel))
+                            
+                            if isSelected && showLabel {
+                                label
+                                    .labelStyle(.titleOnly)
+                                    .font(.body.weight(.medium).leading(.loose))
+                                    .minimumScaleFactor(0.5)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
+                                    .foregroundColor(theme.resolveColors(for: colorScheme).selectedItemColor)
+                                    .if(!reduceMotion) { view in
+                                        view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
+                                    }
+                                    .transition(.opacity)
+                            }
                         }
                     }
                     .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)

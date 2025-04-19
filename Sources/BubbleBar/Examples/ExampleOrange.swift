@@ -25,10 +25,15 @@ public struct ExampleOrange: View {
                 .tabBarItem {
                     Label("Spatial", systemImage: "square.grid.2x2")
                 }
+            Text("Focus View")
+                .tabBarItem {
+                    Label("Focus", systemImage: "timer")
+                }
 
         }
         .bubbleBarStyle(.forest)
         .bubbleBarItemPosition(.bottom)
+        .bubbleBarInnerPadding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
 //        .bubbleBarItemSpacing(12)
 //        .showBubbleBarLabels(true)
 //        .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
