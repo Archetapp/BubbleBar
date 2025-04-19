@@ -30,37 +30,64 @@ extension BubbleBar {
             return configuration.itemBarWidth
         }
         
+        private var iconView: some View {
+            label
+                .labelStyle(.iconOnly)
+                .font(.title3.weight(.regular).leading(.loose))
+                .minimumScaleFactor(0.05)
+                .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
+                       height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
+                .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
+                .if(!reduceMotion) { view in
+                    view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
+                }
+                .accessibility(label: Text(accessibilityLabel))
+        }
+        
+        private var labelView: some View {
+            Group {
+                if (showLabel && isSelected) || configuration.labelsVisible {
+                    label
+                        .labelStyle(.titleOnly)
+                        .font(.body.weight(.medium).leading(.loose))
+                        .minimumScaleFactor(0.05)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
+                        .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
+                        .if(!reduceMotion) { view in
+                            view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
+                        }
+                        .transition(.opacity)
+                }
+            }
+        }
+        
         var body: some View {
             Button(action: action) {
                 VStack(spacing: 0) {
                     upperline
-                    HStack(spacing: 4) {
-                        VStack {
-                            label
-                                .labelStyle(.iconOnly)
-                                .font(.title3.weight(.regular).leading(.loose))
-                                .minimumScaleFactor(0.8)
-                                .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
-                                       height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
-                                .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
-                                .if(!reduceMotion) { view in
-                                    view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
-                                }
-                                .accessibility(label: Text(accessibilityLabel))
-                            
-                            if isSelected && showLabel {
-                                label
-                                    .labelStyle(.titleOnly)
-                                    .font(.body.weight(.medium).leading(.loose))
-                                    .minimumScaleFactor(0.5)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
-                                    .foregroundColor(theme.resolveColors(for: colorScheme).selectedItemColor)
-                                    .if(!reduceMotion) { view in
-                                        view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
-                                    }
-                                    .transition(.opacity)
+                    Group {
+                        switch configuration.labelPosition {
+                        case .top:
+                            VStack(spacing: 4) {
+                                labelView
+                                iconView
+                            }
+                        case .bottom:
+                            VStack(spacing: 4) {
+                                iconView
+                                labelView
+                            }
+                        case .left:
+                            HStack(spacing: 4) {
+                                labelView
+                                iconView
+                            }
+                        case .right:
+                            HStack(spacing: 4) {
+                                iconView
+                                labelView
                             }
                         }
                     }
@@ -71,7 +98,6 @@ extension BubbleBar {
                         switch configuration.itemBarPosition {
                             case .center:
                                 if isSelected {
-                                    
                                     ZStack {
                                         configuration.itemShape
                                             .fill(theme.resolveColors(for: colorScheme).bubbleBackgroundColor)

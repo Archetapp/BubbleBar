@@ -32,8 +32,10 @@ public struct ExampleOrange: View {
 
         }
         .bubbleBarStyle(.forest)
-        .bubbleBarItemPosition(.bottom)
-        .bubbleBarInnerPadding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+//        .bubbleBarItemPosition(.bottom)
+        .bubbleBarSize(.init(width: 200, height: 70))
+//        .bubbleBarLabelPosition(.bottom)
+        .bubbleBarLabelsVisible(false)
 //        .bubbleBarItemSpacing(12)
 //        .showBubbleBarLabels(true)
 //        .bubbleBarShape(RoundedRectangle(cornerRadius: 10))

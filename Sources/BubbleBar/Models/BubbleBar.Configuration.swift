@@ -9,6 +9,13 @@ extension BubbleBar {
         case bottom
     }
     
+    public enum LabelPosition {
+        case top
+        case bottom
+        case left
+        case right
+    }
+    
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
         public var style: Style
@@ -17,6 +24,8 @@ extension BubbleBar {
         public var viewTransitionAnimation: Animation
         public var viewTransition: AnyTransition
         public var showLabels: Bool
+        public var labelsVisible: Bool
+        public var labelPosition: LabelPosition
         public var size: CGSize?
         public var adaptiveItemsWidth: Bool
         public var shape: AnyShape
@@ -61,6 +70,8 @@ extension BubbleBar {
             viewTransitionAnimation: Animation = .smooth,
             viewTransition: AnyTransition = .opacity,
             showLabels: Bool = true,
+            labelsVisible: Bool = false,
+            labelPosition: LabelPosition = .right,
             size: CGSize? = nil,
             adaptiveItemsWidth: Bool = false,
             shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 28)),
@@ -93,6 +104,8 @@ extension BubbleBar {
             self.viewTransitionAnimation = viewTransitionAnimation
             self.viewTransition = viewTransition
             self.showLabels = showLabels
+            self.labelsVisible = labelsVisible
+            self.labelPosition = labelPosition
             self.size = size
             self.adaptiveItemsWidth = adaptiveItemsWidth
             self.shape = shape

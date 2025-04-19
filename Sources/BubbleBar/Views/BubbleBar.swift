@@ -373,6 +373,24 @@ public extension View {
             config.bubbleBarItemSpacing = (isAccessibilitySize: accessibility, regular: regular)
         }
     }
+    
+    /// Sets the position of labels in the bubble bar.
+    /// - Parameter position: The position of the labels (.top, .bottom, .left, or .right)
+    /// - Returns: A view with the modified label position
+    func bubbleBarLabelPosition(_ position: BubbleBar.LabelPosition) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.labelPosition = position
+        }
+    }
+    
+    /// Controls whether labels are visible in the bubble bar.
+    /// - Parameter visible: Whether labels should be visible
+    /// - Returns: A view with the modified label visibility
+    func bubbleBarLabelsVisible(_ visible: Bool) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.labelsVisible = visible
+        }
+    }
 }
 
 // MARK: - Deprecated

@@ -55,7 +55,7 @@ extension BubbleBar {
         /// Calculates the total height including padding for content avoidance
         private func calculateTotalHeight() -> CGFloat {
             // Base height of the tab bar
-            let baseHeight = configuration.size?.height ?? 60
+            let baseHeight = configuration.size?.height ?? 64
             
             // Add vertical padding of the tab bar container
             let totalHeight = baseHeight + configuration.padding.top + configuration.padding.bottom
