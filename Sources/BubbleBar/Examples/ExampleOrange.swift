@@ -13,7 +13,7 @@ public struct ExampleOrange: View {
         BubbleBarView(selectedTab: $selectedTab) {
             Text("Home View")
                 .tabBarItem {
-                    Label("Homecoming", systemImage: "house.fill")
+                    Label("Home", systemImage: "house.fill")
                 }
             
             Text("Focus View")
@@ -29,6 +29,11 @@ public struct ExampleOrange: View {
         }
         .bubbleBarStyle(.forest)
         .bubbleBarItemPosition(.bottom)
+        .showBubbleBarLabels(true)
+        .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
+        .bubbleBarContentPadding(5)
+        .bubbleBarItemEqualSizing(true)
+        .bubbleBarAdaptiveItemsWidth(true)
         
     }
 }
