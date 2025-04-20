@@ -83,14 +83,14 @@ public struct ExampleGreen: View {
                     )
             }
             .bubbleBarStyle(.forest)
-            .bubbleBarItemPosition(.center)
-            .bubbleBarItemSize(height: 40)
-//            .bubbleBarLabelPosition(.top)
+//            .bubbleBarItemPosition(.bottom)
+//            .bubbleBarItemSize(height: 40)
+//            .bubbleBarLabelPosition(.bottom)
 //            .bubbleBarLabelsVisible(true)
 //            .bubbleBarItemEqualSizing(true)
-            .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
-            .bubbleBarGlass(material: .ultraThin)
-            .bubbleBarItemSpacing(0)
+//            .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
+//            .bubbleBarGlass(material: .ultraThin)
+//            .bubbleBarItemSpacing(0)
         }
     }
     
