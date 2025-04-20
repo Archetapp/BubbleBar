@@ -18,6 +18,14 @@ extension BubbleBar {
         let showLabel: Bool
         let action: () -> Void
         
+        private var itemWidth: CGFloat? {
+            configuration.itemWidth
+        }
+        
+        private var itemHeight: CGFloat? {
+            configuration.itemHeight
+        }
+        
         private var itemBarHeight: CGFloat {
             if configuration.itemBarPosition == .center {
                 return configuration.itemBarHeight ?? (dynamicTypeSize.isAccessibilitySize ? 36 : 24)
@@ -35,8 +43,6 @@ extension BubbleBar {
                 .labelStyle(.iconOnly)
                 .font(.title3.weight(.regular).leading(.loose))
                 .minimumScaleFactor(0.05)
-                .frame(width: configuration.itemBarPosition == .center ? itemBarWidth : nil,
-                       height: configuration.itemBarPosition == .center ? itemBarHeight : nil)
                 .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                 .if(!reduceMotion) { view in
                     view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
@@ -54,7 +60,6 @@ extension BubbleBar {
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
-                        .fixedSize(horizontal: false, vertical: true) // Force the label to shrink rather than expand
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
@@ -92,7 +97,8 @@ extension BubbleBar {
                             }
                         }
                     }
-                    .frame(minWidth: 20, maxWidth: isSelected ? (dynamicTypeSize.isAccessibilitySize ? 180 : 150) : nil)
+                    .frame(width: itemWidth, height: itemHeight)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(configuration.bubbleBarItemPadding)
                     .fixedSize(horizontal: configuration.equalItemSizing ? false : true, vertical: true)
                     .background {

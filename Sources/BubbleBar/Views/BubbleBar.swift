@@ -120,7 +120,12 @@ public struct BubbleBarView<Content: View>: View {
                                 }
                             }
                         }
-                    }.frame(maxHeight: 80)
+                    }.frame(
+                        maxHeight: max(
+                            (configuration.size?.height ?? 80) + (configuration.padding.top + configuration.padding.bottom),
+                            (configuration.itemHeight ?? 80) + (configuration.padding.top + configuration.padding.bottom)
+                        )
+                    )
                     //                    .fixedSize(horizontal: true, vertical: false)
                 }
             }
@@ -356,10 +361,20 @@ public extension View {
     /// Sets the size of the item bar indicator.
     /// - Parameter size: The size to apply to the item bar
     /// - Returns: A view with the modified item bar size
-    func bubbleBarItemSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
+    func bubbleBarItemBarSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.itemBarWidth = width
             config.itemBarHeight = height
+        }
+    }
+    
+    /// Sets the size of the item bar indicator.
+    /// - Parameter size: The size to apply to the item bar
+    /// - Returns: A view with the modified item bar size
+    func bubbleBarItemSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.itemWidth = width
+            config.itemHeight = height
         }
     }
     

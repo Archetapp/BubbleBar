@@ -43,6 +43,9 @@ extension BubbleBar {
         public var itemBarWidth: CGFloat?
         public var itemBarHeight: CGFloat?
         
+        public var itemWidth: CGFloat?
+        public var itemHeight: CGFloat?
+        
         // Shadow properties
         public var shadowRadius: CGFloat
         public var shadowOffset: CGPoint
