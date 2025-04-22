@@ -67,6 +67,11 @@ extension BubbleBar {
         public var useReducedMotion: Bool
         public var increasedContrastEnabled: Bool
         
+        // Font style properties
+        public var iconTextStyle: Font.TextStyle
+        public var labelTextStyle: Font.TextStyle
+        public var useConsistentSizing: Bool
+        
         public init(
             style: Style = .forest,
             animation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
@@ -99,7 +104,10 @@ extension BubbleBar {
             minimumTouchTargetSize: CGSize = CGSize(width: 44, height: 44),
             accessibilitySpacing: EdgeInsets = EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24),
             useReducedMotion: Bool = false,
-            increasedContrastEnabled: Bool = false
+            increasedContrastEnabled: Bool = false,
+            iconTextStyle: Font.TextStyle = .title2,
+            labelTextStyle: Font.TextStyle = .caption,
+            useConsistentSizing: Bool = true
         ) {
             self.style = increasedContrastEnabled ? .highContrast : style
             self.originalStyle = style  // Store the original style
@@ -136,6 +144,11 @@ extension BubbleBar {
             self.accessibilitySpacing = accessibilitySpacing
             self.useReducedMotion = useReducedMotion
             self.increasedContrastEnabled = increasedContrastEnabled
+            
+            // Initialize font style properties
+            self.iconTextStyle = iconTextStyle
+            self.labelTextStyle = labelTextStyle
+            self.useConsistentSizing = useConsistentSizing
         }
         
         /// Updates the configuration based on the current accessibility settings

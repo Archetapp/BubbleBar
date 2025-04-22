@@ -135,5 +135,5 @@ public struct ExampleGreen: View {
 //        .environment(\.layoutDirection, .rightToLeft)
 //        .previewDisplayName("RTL")
 //        
-    ExampleGreen(language: .japanese)
+    ExampleGreen(language: .english)
 }

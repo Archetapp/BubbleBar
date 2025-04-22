@@ -2,6 +2,59 @@
 
 import SwiftUIX
 
+// MARK: - Scale Factor Preference Key
+extension BubbleBar {
+    internal struct ScaleFactorPreferenceKey: PreferenceKey {
+        static var defaultValue: CGFloat = 1.0
+        
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = min(value, nextValue())
+        }
+    }
+}
+
+private struct ScalableText: ViewModifier {
+    let containerWidth: CGFloat
+    @Binding var commonScaleFactor: CGFloat
+    
+    func body(content: Content) -> some View {
+        GeometryReader { geometry in
+            content
+                .fixedSize(horizontal: true, vertical: false)
+                .measureSize { size in
+                    if size.width > 0 {
+                        let availableWidth = min(containerWidth, geometry.size.width)
+                        let scaleFactor = min(1.0, max(0.7, availableWidth / size.width))
+                        if scaleFactor < commonScaleFactor {
+                            commonScaleFactor = scaleFactor
+                        }
+                    }
+                }
+                .scaleEffect(commonScaleFactor, anchor: .center)
+                .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+                .preference(key: BubbleBar.ScaleFactorPreferenceKey.self, value: commonScaleFactor)
+        }
+    }
+}
+
+private struct SizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
+    }
+}
+
+private extension View {
+    func measureSize(perform action: @escaping (CGSize) -> Void) -> some View {
+        background(
+            GeometryReader { geometry in
+                Color.clear.preference(key: SizePreferenceKey.self, value: geometry.size)
+            }
+        )
+        .onPreferenceChange(SizePreferenceKey.self, perform: action)
+    }
+}
+
 extension BubbleBar {
     /// Internal implementation of the tab bar button
     internal struct _TabBarButton: View {
@@ -17,6 +70,7 @@ extension BubbleBar {
         var namespace: Namespace.ID
         let showLabel: Bool
         let action: () -> Void
+        @Binding var commonScaleFactor: CGFloat
         
         private var itemWidth: CGFloat? {
             configuration.itemWidth
@@ -41,9 +95,10 @@ extension BubbleBar {
         private var iconView: some View {
             label
                 .labelStyle(.iconOnly)
-                .font(.title3.weight(.regular).leading(.loose))
+                .font(.system(configuration.iconTextStyle).weight(.regular))
                 .minimumScaleFactor(0.05)
                 .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
+                .frame(height: 24)
                 .if(!reduceMotion) { view in
                     view.matchedGeometryEffect(id: "ICON_\(index)", in: namespace)
                 }
@@ -55,16 +110,20 @@ extension BubbleBar {
                 if (showLabel && isSelected) || configuration.labelsVisible {
                     label
                         .labelStyle(.titleOnly)
-                        .font(.body.weight(.medium).leading(.loose))
-                        .minimumScaleFactor(0.01) // Reduced to allow for aggressive scaling with multi-byte characters
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(maxWidth: dynamicTypeSize.isAccessibilitySize ? 120 : 100)
+                        .font(.system(configuration.labelTextStyle).weight(.medium))
                         .foregroundColor(isSelected ? theme.resolveColors(for: colorScheme).selectedItemColor : theme.resolveColors(for: colorScheme).unselectedItemColor)
+                        .lineLimit(1)
+                        .if(configuration.labelPosition == .top || configuration.labelPosition == .bottom) { view in
+                            view.modifier(ScalableText(
+                                containerWidth: dynamicTypeSize.isAccessibilitySize ? 
+                                    min(120, itemWidth ?? 120) : 
+                                    min(100, itemWidth ?? 100),
+                                commonScaleFactor: $commonScaleFactor
+                            ))
+                        }
                         .if(!reduceMotion) { view in
                             view.matchedGeometryEffect(id: "LABEL_\(index)", in: namespace)
                         }
-                        .transition(.opacity)
                 }
             }
         }
@@ -88,12 +147,14 @@ extension BubbleBar {
                         case .left:
                             HStack(spacing: 4) {
                                 labelView
+                                    .fixedSize()
                                 iconView
                             }
                         case .right:
                             HStack(spacing: 4) {
                                 iconView
                                 labelView
+                                    .fixedSize()
                             }
                         }
                     }
@@ -132,6 +193,11 @@ extension BubbleBar {
             .accessibilityAddTraits(isSelected ? [.isSelected, .isButton, .isTabBar] : [.isButton, .isTabBar])
             .accessibilityIdentifier("TabItem-\(index)")
             .contentShape(Rectangle())
+            .onPreferenceChange(BubbleBar.ScaleFactorPreferenceKey.self) { newValue in
+                if newValue < commonScaleFactor {
+                    commonScaleFactor = newValue
+                }
+            }
         }
         
         /// Gets the accessibility label from the label view using reflection
@@ -236,3 +302,4 @@ extension View {
         }
     }
 }
+
