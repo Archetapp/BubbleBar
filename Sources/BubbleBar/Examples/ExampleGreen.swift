@@ -83,9 +83,14 @@ public struct ExampleGreen: View {
                     )
             }
             .bubbleBarStyle(.forest)
-            .bubbleBarItemPosition(.center)
-            .bubbleBarGlass(material: .ultraThin)
-            .bubbleBarItemSpacing(0)
+//            .bubbleBarItemPosition(.bottom)
+//            .bubbleBarItemSize(height: 40)
+//            .bubbleBarLabelPosition(.bottom)
+//            .bubbleBarLabelsVisible(true)
+//            .bubbleBarItemEqualSizing(true)
+//            .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
+//            .bubbleBarGlass(material: .ultraThin)
+//            .bubbleBarItemSpacing(0)
         }
     }
     
@@ -130,5 +135,5 @@ public struct ExampleGreen: View {
 //        .environment(\.layoutDirection, .rightToLeft)
 //        .previewDisplayName("RTL")
 //        
-    ExampleGreen(language: .japanese)
+    ExampleGreen(language: .english)
 }

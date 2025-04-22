@@ -5,6 +5,9 @@ import SwiftUIX
 /// A SwiftUI package that provides a customizable, animated tab bar with a bubble effect.
 public enum BubbleBar {}
 
+// Import the ScaleFactorPreferenceKey from TabBarContainer
+private typealias ScaleFactorPreferenceKey = BubbleBar.ScaleFactorPreferenceKey
+
 /// A customizable tab bar view that provides a modern, animated interface for navigation.
 /// The tab bar features a bubble effect that moves between selected items and supports both icon and label display.
 ///
@@ -41,6 +44,7 @@ public struct BubbleBarView<Content: View>: View {
     @Environment(\.colorScheme) private var colorScheme
     @Namespace private var namespace
     @Binding var selectedTab: Int
+    @State private var commonScaleFactor: CGFloat = 1.0
     private let content: Content
     @State private var tabBarHeight: CGFloat = 0
     
@@ -51,16 +55,11 @@ public struct BubbleBarView<Content: View>: View {
     public init(selectedTab: Binding<Int>, @ViewBuilder content: () -> Content) {
         self._selectedTab = selectedTab
         self.content = content()
-        
-        // Note: We don't need to initialize here since the environment configuration
-        // will be updated in the body when the view loads
     }
     
     public var body: some View {
-        // Check if high contrast mode is forced via launch arguments (useful for testing)
         let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
         
-        // Update accessibility settings immediately
         let _ = configuration.updateForAccessibility(
             dynamicTypeSize: dynamicTypeSize,
             reduceMotion: reduceMotion,
@@ -68,113 +67,108 @@ public struct BubbleBarView<Content: View>: View {
             increasedContrast: colorSchemeContrast == .increased || forceHighContrast
         )
         
-        // Store the content padding value locally
         let contentPadding = configuration.contentBottomPadding
         
         return ZStack(alignment: .bottom) {
-            _VariadicViewAdapter(content) { content in
-                ZStack {
-                    ForEach(content.children.indices, id: \.self) { index in
-                        content.children[index]
-                            .transition(configuration.viewTransition)
-                            .opacity(index == selectedTab ? 1 : 0)
-                            .if(contentPadding > 0) { view in
-                                view.padding(.bottom, contentPadding)
-                            }
-                    }
-                }
-                .animation(reduceMotion ? .default : configuration.viewTransitionAnimation, value: selectedTab)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            BubbleBar._TabBarContainer {
-                _VariadicViewAdapter(content) { content in
-                    HStack(spacing: dynamicTypeSize.isAccessibilitySize ?
-                           configuration.bubbleBarItemSpacing.isAccessibilitySize :
-                            configuration.bubbleBarItemSpacing.regular) {
-                        ForEach(content.children.indices, id: \.self) { index in
-                            if let itemInfo = content.children[index].traits.tabBarLabel {
-                                BubbleBar._TabBarButton(
-                                    label: itemInfo.label,
-                                    isSelected: selectedTab == index,
-                                    index: index,
-                                    namespace: namespace,
-                                    showLabel: configuration.showLabels,
-                                    action: {
-                                        withAnimation(reduceMotion ? .default : configuration.animation) {
-                                            selectedTab = index
-#if canImport(UIKit)
-                                            UIAccessibility.post(
-                                                notification: .screenChanged,
-                                                argument: "Switched to \(itemInfo.accessibilityLabel)"
-                                            )
-#endif
-                                        }
-                                    }
-                                )
-                                .accessibilityLabel(itemInfo.accessibilityLabel)
-                                .accessibilityHint(itemInfo.accessibilityHint)
-                                
-                                if index != content.children.indices.last && !configuration.equalItemSizing {
-                                    Spacer(minLength: dynamicTypeSize.isAccessibilitySize ? 1 : 0)
-                                }
-                            }
-                        }
-                    }.frame(maxHeight: 80)
-                    //                    .fixedSize(horizontal: true, vertical: false)
-                }
-            }
-            .frame(width: Screen.width)
-            .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
-            .environment(\.theme, configuration.style.theme)
-            .compositingGroup()
-            .shadow(
-                color: configuration.style.theme.colors(for: colorScheme).barShadowColor,
-                radius: configuration.shadowRadius,
-                x: configuration.shadowOffset.x,
-                y: configuration.shadowOffset.y
-            )
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel("Navigation")
-            .accessibilityHint("Tab bar for switching between different views")
-            .accessibilityIdentifier("BubbleBar")
-            .accessibilityAddTraits(.isTabBar)
-            .offset(y: configuration.isVisible ? 0 : 100)
-            .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
-            .onChange(of: dynamicTypeSize) { _, _ in
-                updateAccessibilitySettings()
-            }
-            .onChange(of: reduceMotion) { _, _ in
-                updateAccessibilitySettings()
-            }
-            .onChange(of: reduceTransparency) { _, _ in
-                updateAccessibilitySettings()
-            }
-            .onChange(of: colorSchemeContrast) { _, _ in
-                updateAccessibilitySettings()
-            }
+            contentView(contentPadding: contentPadding)
+            tabBarView()
         }
         .ignoresSafeArea(.keyboard)
         .onPreferenceChange(TabBarSizePreferenceKey.self) { height in
-            if contentPadding > 0 {
-                Task { @MainActor in
-                    self.tabBarHeight = height
-                }
-            }
+            tabBarHeight = height
         }
     }
     
-    private func updateAccessibilitySettings() {
-        // Check if high contrast mode is forced via launch arguments (useful for testing)
-        let forceHighContrast = ProcessInfo.processInfo.arguments.contains("ENABLE_HIGH_CONTRAST")
-        
-        // Apply the updated configuration
-        _ = configuration.updateForAccessibility(
-            dynamicTypeSize: dynamicTypeSize,
-            reduceMotion: reduceMotion,
-            reduceTransparency: reduceTransparency,
-            increasedContrast: colorSchemeContrast == .increased || forceHighContrast
+    @ViewBuilder
+    private func contentView(contentPadding: CGFloat) -> some View {
+        _VariadicViewAdapter(content) { content in
+            ZStack {
+                ForEach(content.children.indices, id: \.self) { index in
+                    content.children[index]
+                        .transition(configuration.viewTransition)
+                        .opacity(index == selectedTab ? 1 : 0)
+                        .if(contentPadding > 0) { view in
+                            view.padding(.bottom, contentPadding)
+                        }
+                }
+            }
+            .animation(reduceMotion ? .default : configuration.viewTransitionAnimation, value: selectedTab)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    @ViewBuilder
+    private func tabBarView() -> some View {
+        BubbleBar._TabBarContainer {
+            _VariadicViewAdapter(content) { content in
+                let spacing = dynamicTypeSize.isAccessibilitySize ?
+                    configuration.bubbleBarItemSpacing.isAccessibilitySize :
+                    configuration.bubbleBarItemSpacing.regular
+                
+                HStack(spacing: spacing) {
+                    ForEach(content.children.indices, id: \.self) { index in
+                        if let itemInfo = content.children[index].traits.tabBarLabel {
+                            tabBarButton(for: index, itemInfo: itemInfo)
+                            
+                            if index != content.children.indices.last && !configuration.equalItemSizing {
+                                Spacer(minLength: dynamicTypeSize.isAccessibilitySize ? 1 : 0)
+                            }
+                        }
+                    }
+                }
+                .frame(maxHeight: max(
+                    (configuration.size?.height ?? 80) + (configuration.padding.top + configuration.padding.bottom),
+                    (configuration.itemHeight ?? 80) + (configuration.padding.top + configuration.padding.bottom)
+                ))
+            }
+        }
+        .frame(width: Screen.width)
+        .animation(reduceMotion ? .default : configuration.animation, value: selectedTab)
+        .environment(\.theme, configuration.style.theme)
+        .compositingGroup()
+        .shadow(
+            color: configuration.style.theme.colors(for: colorScheme).barShadowColor,
+            radius: configuration.shadowRadius,
+            x: configuration.shadowOffset.x,
+            y: configuration.shadowOffset.y
         )
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Navigation")
+        .accessibilityHint("Tab bar for switching between different views")
+        .accessibilityIdentifier("BubbleBar")
+        .accessibilityAddTraits(.isTabBar)
+        .offset(y: configuration.isVisible ? 0 : 100)
+        .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
+    }
+    
+    @ViewBuilder
+    private func tabBarButton(for index: Int, itemInfo: TabBarItemInfo) -> some View {
+        BubbleBar._TabBarButton(
+            label: itemInfo.label,
+            isSelected: selectedTab == index,
+            index: index,
+            namespace: namespace,
+            showLabel: configuration.showLabels,
+            action: {
+                withAnimation(reduceMotion ? .default : configuration.animation) {
+                    selectedTab = index
+#if canImport(UIKit)
+                    UIAccessibility.post(
+                        notification: .screenChanged,
+                        argument: "Switched to \(itemInfo.accessibilityLabel)"
+                    )
+#endif
+                }
+            },
+            commonScaleFactor: $commonScaleFactor
+        )
+        .accessibilityLabel(itemInfo.accessibilityLabel)
+        .accessibilityHint(itemInfo.accessibilityHint)
+        .onPreferenceChange(ScaleFactorPreferenceKey.self) { newValue in
+            withAnimation {
+                commonScaleFactor = min(commonScaleFactor, newValue)
+            }
+        }
     }
 }
 
@@ -356,10 +350,20 @@ public extension View {
     /// Sets the size of the item bar indicator.
     /// - Parameter size: The size to apply to the item bar
     /// - Returns: A view with the modified item bar size
-    func bubbleBarItemSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
+    func bubbleBarItemBarSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.itemBarWidth = width
             config.itemBarHeight = height
+        }
+    }
+    
+    /// Sets the size of the item bar indicator.
+    /// - Parameter size: The size to apply to the item bar
+    /// - Returns: A view with the modified item bar size
+    func bubbleBarItemSize(_ width: CGFloat? = nil, height: CGFloat? = nil) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.itemWidth = width
+            config.itemHeight = height
         }
     }
     
@@ -389,6 +393,27 @@ public extension View {
     func bubbleBarLabelsVisible(_ visible: Bool) -> some View {
         transformEnvironment(\.bubbleBarConfiguration) { config in
             config.labelsVisible = visible
+        }
+    }
+    
+    /// Sets the font sizes for the bubble bar items
+    /// - Parameters:
+    ///   - iconStyle: The text style for icons (e.g. .title, .body)
+    ///   - labelStyle: The text style for labels (e.g. .caption, .body)
+    /// - Returns: A view with the modified font styles
+    func bubbleBarFontSizes(icon iconStyle: Font.TextStyle = .title2, label labelStyle: Font.TextStyle = .caption) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.iconTextStyle = iconStyle
+            config.labelTextStyle = labelStyle
+        }
+    }
+    
+    /// Controls whether the bubble bar should maintain consistent sizing across all items
+    /// - Parameter enabled: Whether to enable consistent sizing
+    /// - Returns: A view with the modified sizing behavior
+    func bubbleBarConsistentSizing(_ enabled: Bool) -> some View {
+        transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.useConsistentSizing = enabled
         }
     }
 }
