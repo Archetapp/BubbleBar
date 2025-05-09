@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 public struct ExampleOrange: View {
     @State private var selectedTab = 0
     
@@ -44,3 +45,5 @@ public struct ExampleOrange: View {
 #Preview {
     ExampleOrange()
 }
+
+#endif

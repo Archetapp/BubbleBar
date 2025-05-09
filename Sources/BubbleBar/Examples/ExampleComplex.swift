@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 internal struct ExampleComplex: View {
     @State private var selectedTab = 0
     @State var isShowingTabBar: Bool = true
@@ -52,3 +53,4 @@ internal struct ExampleComplex: View {
     ExampleComplex()
         .preferredColorScheme(.dark)
 }
+#endif

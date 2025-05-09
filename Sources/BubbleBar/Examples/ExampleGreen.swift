@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 /// Supported languages for the example app
 public enum Language {
     /// English language
@@ -66,7 +67,13 @@ public struct ExampleGreen: View {
                 
                 view
                     .tabBarItem(
-                        label: { Label(language.tabLabels[2], systemImage: "mail.stack") },
+                        label: {
+                            Label(title: {
+                                Text("Test")
+                            }, icon: {
+                                Image(systemName: "timer")
+                            })
+                        },
                         accessibilityLabel: language.tabLabels[2]
                     )
                 
@@ -82,15 +89,26 @@ public struct ExampleGreen: View {
                         accessibilityLabel: language.tabLabels[4]
                     )
             }
-            .bubbleBarStyle(.forest)
-//            .bubbleBarItemPosition(.bottom)
-//            .bubbleBarItemSize(height: 40)
-//            .bubbleBarLabelPosition(.bottom)
-//            .bubbleBarLabelsVisible(true)
-//            .bubbleBarItemEqualSizing(true)
-//            .bubbleBarShape(RoundedRectangle(cornerRadius: 10))
-//            .bubbleBarGlass(material: .ultraThin)
+            .bubbleBarStyle(.desert)
+            .bubbleBarItemPosition(.bottom)
+            .bubbleBarLabelPosition(.bottom)
+            .bubbleBarItemShape(RoundedRectangle(cornerRadius: 0))
+////            .bubbleBarLabelPosition(.bottom)
+            .bubbleBarInnerPadding(
+                .init(
+                    top: 0,
+                    leading: 0,
+                    bottom: 0,
+                    trailing: 0
+                )
+            )
+            .bubbleBarItemEqualSizing(true)
+            .bubbleBarShape(RoundedRectangle(cornerRadius: 0))
+            .bubbleBarGlass(material: .ultraThin)
+//            .bubbleBarPadding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+//            .bubbleBarAdaptiveItemsWidth(true)
 //            .bubbleBarItemSpacing(0)
+//            .bubbleBarItemSize(height: 100)
         }
     }
     
@@ -137,3 +155,5 @@ public struct ExampleGreen: View {
 //        
     ExampleGreen(language: .english)
 }
+
+#endif
