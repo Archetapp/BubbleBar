@@ -185,10 +185,10 @@ public extension View {
         modifier(BubbleBarConsistentSizingModifier(enabled: enabled))
     }
     
-    /// Controls whether users can swipe between views in the bubble bar.
-    /// - Parameter enabled: Whether to enable swipe gestures between views
+    /// Controls how users can swipe between views in the bubble bar.
+    /// - Parameter behavior: The swipe behavior to use (.disabled, .edges, or .full)
     /// - Returns: A view with the modified swipe behavior
-    func bubbleBarCanSwipeBetweenViews(_ enabled: Bool) -> ModifiedContent<Self, BubbleBarCanSwipeBetweenViewsModifier> {
-        modifier(BubbleBarCanSwipeBetweenViewsModifier(enabled: enabled))
+    func bubbleBarCanSwipeBetweenViews(_ behavior: BubbleBar.SwipeBehavior) -> ModifiedContent<Self, BubbleBarCanSwipeBetweenViewsModifier> {
+        modifier(BubbleBarCanSwipeBetweenViewsModifier(behavior: behavior))
     }
 } 

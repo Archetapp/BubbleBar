@@ -279,11 +279,11 @@ public struct BubbleBarConsistentSizingModifier: ViewModifier {
 
 // MARK: - Can Swipe Between Views Modifier
 public struct BubbleBarCanSwipeBetweenViewsModifier: ViewModifier {
-    let enabled: Bool
+    let behavior: BubbleBar.SwipeBehavior
     
     public func body(content: Content) -> some View {
         content.transformEnvironment(\.bubbleBarConfiguration) { config in
-            config.canSwipeBetweenViews = enabled
+            config.swipeBehavior = behavior
         }
     }
-} 
+}

@@ -100,16 +100,16 @@ public struct BubbleBarView<Content: View>: View {
                         self.initialTab = newValue
                     }
                 }
-                .if(configuration.canSwipeBetweenViews) { view in
+                .if(configuration.swipeBehavior != .disabled) { view in
                     view.gesture(
                         DragGesture(minimumDistance: 20)
                             .onChanged { gesture in
-                                // Only handle drags that start near the edges
+                                // Check if we should handle this drag based on swipe behavior
                                 let edgeThreshold: CGFloat = 50 // pixels from edge
                                 let startLocation = gesture.startLocation.x
                                 let isNearEdge = startLocation < edgeThreshold || startLocation > width - edgeThreshold
                                 
-                                if !isNearEdge {
+                                if configuration.swipeBehavior == .edges && !isNearEdge {
                                     return
                                 }
                                 
@@ -149,12 +149,12 @@ public struct BubbleBarView<Content: View>: View {
                                 }
                             }
                             .onEnded { gesture in
-                                // Only handle drags that started near the edges
+                                // Check if we should handle this drag based on swipe behavior
                                 let edgeThreshold: CGFloat = 50
                                 let startLocation = gesture.startLocation.x
                                 let isNearEdge = startLocation < edgeThreshold || startLocation > width - edgeThreshold
                                 
-                                if !isNearEdge {
+                                if configuration.swipeBehavior == .edges && !isNearEdge {
                                     return
                                 }
                                 

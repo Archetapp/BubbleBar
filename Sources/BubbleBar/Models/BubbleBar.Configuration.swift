@@ -59,7 +59,7 @@ extension BubbleBar {
         public var iconTextStyle: Font.TextStyle
         public var labelTextStyle: Font.TextStyle
         public var useConsistentSizing: Bool
-        public var canSwipeBetweenViews: Bool
+        public var swipeBehavior: SwipeBehavior
         
         public init(
             style: Style = .forest,
@@ -97,7 +97,7 @@ extension BubbleBar {
             iconTextStyle: Font.TextStyle = .title2,
             labelTextStyle: Font.TextStyle = .caption,
             useConsistentSizing: Bool = true,
-            canSwipeBetweenViews: Bool = false
+            swipeBehavior: SwipeBehavior = .disabled
         ) {
             self.style = increasedContrastEnabled ? .highContrast : style
             self.originalStyle = style  // Store the original style
@@ -139,7 +139,7 @@ extension BubbleBar {
             self.iconTextStyle = iconTextStyle
             self.labelTextStyle = labelTextStyle
             self.useConsistentSizing = useConsistentSizing
-            self.canSwipeBetweenViews = canSwipeBetweenViews
+            self.swipeBehavior = swipeBehavior
         }
         
         /// Updates the configuration based on the current accessibility settings
