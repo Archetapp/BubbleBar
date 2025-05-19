@@ -3,18 +3,6 @@
 import SwiftUIX
 
 extension BubbleBar {
-    public enum ItemBarPosition {
-        case center
-        case top
-        case bottom
-    }
-    
-    public enum LabelPosition {
-        case top
-        case bottom
-        case left
-        case right
-    }
     
     @MainActor
     public final class Configuration: ObservableObject, Sendable {
@@ -71,6 +59,7 @@ extension BubbleBar {
         public var iconTextStyle: Font.TextStyle
         public var labelTextStyle: Font.TextStyle
         public var useConsistentSizing: Bool
+        public var canSwipeBetweenViews: Bool
         
         public init(
             style: Style = .forest,
@@ -107,7 +96,8 @@ extension BubbleBar {
             increasedContrastEnabled: Bool = false,
             iconTextStyle: Font.TextStyle = .title2,
             labelTextStyle: Font.TextStyle = .caption,
-            useConsistentSizing: Bool = true
+            useConsistentSizing: Bool = true,
+            canSwipeBetweenViews: Bool = false
         ) {
             self.style = increasedContrastEnabled ? .highContrast : style
             self.originalStyle = style  // Store the original style
@@ -149,6 +139,7 @@ extension BubbleBar {
             self.iconTextStyle = iconTextStyle
             self.labelTextStyle = labelTextStyle
             self.useConsistentSizing = useConsistentSizing
+            self.canSwipeBetweenViews = canSwipeBetweenViews
         }
         
         /// Updates the configuration based on the current accessibility settings
