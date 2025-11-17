@@ -191,4 +191,11 @@ public extension View {
     func bubbleBarCanSwipeBetweenViews(_ behavior: BubbleBar.SwipeBehavior) -> ModifiedContent<Self, BubbleBarCanSwipeBetweenViewsModifier> {
         modifier(BubbleBarCanSwipeBetweenViewsModifier(behavior: behavior))
     }
+
+    /// Sets the z-index of the bubble bar for layering control.
+    /// - Parameter zIndex: The z-index value to apply. Lower values render behind, higher values render in front.
+    /// - Returns: A view with the modified z-index
+    func bubbleBarZIndex(_ zIndex: Double) -> ModifiedContent<Self, BubbleBarZIndexModifier> {
+        modifier(BubbleBarZIndexModifier(zIndex: zIndex))
+    }
 } 

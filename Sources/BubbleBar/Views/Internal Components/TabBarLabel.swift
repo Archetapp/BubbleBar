@@ -13,14 +13,19 @@ public struct TabBarItemInfo {
     /// The accessibility hint used by VoiceOver
     public let accessibilityHint: String
     
+    /// Optional custom tap action for this tab item
+    public let customTapAction: (() -> Void)?
+    
     public init(
         label: AnyView,
         accessibilityLabel: String,
-        accessibilityHint: String = "Double tap to switch to this tab"
+        accessibilityHint: String = "Double tap to switch to this tab",
+        customTapAction: (() -> Void)? = nil
     ) {
         self.label = label
         self.accessibilityLabel = accessibilityLabel
         self.accessibilityHint = accessibilityHint
+        self.customTapAction = customTapAction
     }
 }
 
@@ -32,9 +37,21 @@ internal struct TabBarLabelKey: _ViewTraitKey {
     }
 }
 
+// Separate trait key to hold a custom tap action.
+internal struct TabBarTapActionKey: _ViewTraitKey {
+    @inlinable
+    static var defaultValue: (() -> Void)? {
+        nil
+    }
+}
+
 extension _ViewTraitKeys {
     internal var tabBarLabel: TabBarLabelKey.Type {
         TabBarLabelKey.self
+    }
+
+    internal var tabBarTapAction: TabBarTapActionKey.Type {
+        TabBarTapActionKey.self
     }
 }
 
@@ -71,5 +88,24 @@ extension View {
                 accessibilityHint: accessibilityHint
             )
         )
+    }
+    
+    /// Adds a custom tap action to a tab bar item
+    /// - Parameter action: The action to perform when this tab item is tapped
+    /// - Returns: A view with custom tap behavior for this tab item
+    public func onTabItemTap(_ action: @escaping () -> Void) -> some View {
+        self.modifier(TabItemTapModifier(action: action))
+    }
+}
+
+// MARK: - Tab Item Tap Modifier
+private struct TabItemTapModifier: ViewModifier {
+    let action: () -> Void
+    
+    func body(content: Content) -> some View {
+        content
+            // Store the tap action in a separate trait so we can
+            // combine it with the label trait at consumption time.
+            ._trait(\.tabBarTapAction, action)
     }
 } 

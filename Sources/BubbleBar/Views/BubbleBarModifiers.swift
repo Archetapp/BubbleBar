@@ -280,10 +280,21 @@ public struct BubbleBarConsistentSizingModifier: ViewModifier {
 // MARK: - Can Swipe Between Views Modifier
 public struct BubbleBarCanSwipeBetweenViewsModifier: ViewModifier {
     let behavior: BubbleBar.SwipeBehavior
-    
+
     public func body(content: Content) -> some View {
         content.transformEnvironment(\.bubbleBarConfiguration) { config in
             config.swipeBehavior = behavior
+        }
+    }
+}
+
+// MARK: - ZIndex Modifier
+public struct BubbleBarZIndexModifier: ViewModifier {
+    let zIndex: Double
+
+    public func body(content: Content) -> some View {
+        content.transformEnvironment(\.bubbleBarConfiguration) { config in
+            config.zIndex = zIndex
         }
     }
 }

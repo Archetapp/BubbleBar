@@ -219,8 +219,18 @@ public struct BubbleBarView<Content: View>: View {
                 
                 HStack(spacing: spacing) {
                     ForEach(content.children.indices, id: \.self) { index in
-                        if let itemInfo = content.children[index].traits.tabBarLabel {
-                            tabBarButton(for: index, itemInfo: itemInfo)
+                        // Merge the label trait with an optional custom tap action trait
+                        if let baseInfo = content.children[index].traits.tabBarLabel {
+                            let finalInfo = content.children[index].traits.tabBarTapAction.map { action in
+                                TabBarItemInfo(
+                                    label: baseInfo.label,
+                                    accessibilityLabel: baseInfo.accessibilityLabel,
+                                    accessibilityHint: baseInfo.accessibilityHint,
+                                    customTapAction: action
+                                )
+                            } ?? baseInfo
+
+                            tabBarButton(for: index, itemInfo: finalInfo)
                             
                             if index != content.children.indices.last && !configuration.equalItemSizing {
                                 Spacer(minLength: dynamicTypeSize.isAccessibilitySize ? 1 : 0)
@@ -251,6 +261,7 @@ public struct BubbleBarView<Content: View>: View {
         .accessibilityAddTraits(.isTabBar)
         .offset(y: configuration.isVisible ? 0 : 100)
         .animation(reduceMotion ? .default : configuration.animation, value: configuration.isVisible)
+        .zIndex(configuration.zIndex)
     }
     
     @ViewBuilder
@@ -262,14 +273,19 @@ public struct BubbleBarView<Content: View>: View {
             namespace: namespace,
             showLabel: configuration.showLabels,
             action: {
-                withAnimation(reduceMotion ? .default : configuration.animation) {
-                    selectedTab = index
+                // Use custom tap action if available, otherwise use default tab selection
+                if let customAction = itemInfo.customTapAction {
+                    customAction()
+                } else {
+                    withAnimation(reduceMotion ? .default : configuration.animation) {
+                        selectedTab = index
 #if canImport(UIKit)
-                    UIAccessibility.post(
-                        notification: .screenChanged,
-                        argument: "Switched to \(itemInfo.accessibilityLabel)"
-                    )
+                        UIAccessibility.post(
+                            notification: .screenChanged,
+                            argument: "Switched to \(itemInfo.accessibilityLabel)"
+                        )
 #endif
+                    }
                 }
             },
             commonScaleFactor: $commonScaleFactor
